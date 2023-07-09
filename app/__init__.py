@@ -27,4 +27,4 @@ def create_user():
         db.session.add(Rafaela)
         db.session.commit()
 
-create_user()   
+# create_user()   
