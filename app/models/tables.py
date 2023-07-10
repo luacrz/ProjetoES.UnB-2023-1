@@ -80,8 +80,19 @@ class teste(db.Model):
        def __repr__(self):
                return "<test %r>" % self.username
        
+class FinalizedExam(db.Model):
+       __tablename__ = "finalized_exams"
+       id = db.Column(db.Integer, primary_key = True, autoincrement = True)
+       user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+       exam_id = db.Column(db.Integer, db.ForeignKey('exams.id'))
+       answers_replied = db.Column(db.Text)
 
-
+       def __init__(self, user_id, exam_id, answers_replied):
+                self.start_time = user_id
+                self.end_time = exam_id
+                self.user_id = answers_replied
+       def __repr__(self):
+               return "<FinalizedExam %r>" % self.id
                
 
 
