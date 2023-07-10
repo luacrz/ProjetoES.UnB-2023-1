@@ -1,12 +1,16 @@
-from flask import Flask
+from flask import Flask, render_template
+from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+
 
 
 
 app = Flask(__name__)
 app.config.from_object('config')
 
+
+#login_manager = LoginManager(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
@@ -27,4 +31,4 @@ def create_user():
         db.session.add(Rafaela)
         db.session.commit()
 
-# create_user()   
+#create_user()   
