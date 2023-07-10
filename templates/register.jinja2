@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registro</title>
+</head>
+<body>
+    <h1>Registro</h1>
+    <form action="{{ url_for('register') }}" method="post">
+        <input type = "text" usuario= "usuário" placeholder = "insira um usuário">
+        <input type = "text" name= "name" placeholder = "insira um nome">
+        <input type = "email" email= "email" placeholder = "insira um email">
+        <input type = "password" senha= "senha" placeholder = "insira uma senha">
+        <form>
+            <select name="plataforma" required="required">
+                <option value="">Cargo</option>
+                <option value=False>Estudante</option>
+                <option value=True>Professor</option>
+            </select>
+        <input type="submit" value="Cadastrar">
+    </form>
+</body>
+</html>

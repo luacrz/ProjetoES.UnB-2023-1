@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Criar Exame</title>
+</head>
+<body>
+    <h1>Criar Exame</h1>
+    <form action="{{ url_for('create_exam') }}" method="post">
+        <label for="start_time">Horário de Início:</label>
+        <input type="datetime-local" id="start_time" name="start_time" required><br><br>
+        
+        <label for="end_time">Horário de Término:</label>
+        <input type="datetime-local" id="end_time" name="end_time" required><br><br>
+        
+        <label for="comment">Comentário:</label>
+        <textarea id="comment" name="comment"></textarea><br><br>
+        
+        <h2>Selecione as Questões:</h2>
+        {% for question in questions %}
+            <input type="checkbox" id="question_{{ question.id }}" name="questions[]" value="{{ question.id }}">
+            <label for="question_{{ question.id }}">{{ question.statement }}</label><br>
+        {% endfor %}
+        
+        <br>
+        <input type="submit" value="Criar Exame">
+    </form>
+</body>
+</html>

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Página do Aluno</title>
+</head>
+<body>
+    <h1>Página do Aluno</h1>
+
+    <!-- Barra de pesquisa -->
+    <form action="{{ url_for('realizar_prova') }}" method="GET">
+        <label for="id_prova">Digite o ID da prova:</label>
+        <input type="text" id="id_prova" name="id_prova" required>
+        <button type="submit">Realizar Prova</button>
+    </form>
+
+    <!-- Botão para visualizar provas realizadas -->
+    <a href="{{ url_for('provas_realizadas') }}">Visualizar Provas Realizadas</a>
+</body>
+</html>
