@@ -20,7 +20,8 @@ cd nome_do_projeto
 ```
 
 ## Máquina virtural
-Instale ou verifique se o pip está na última versão
+1. Instale ou verifique se o pip está na última versão
+
 windows:
 ```
 py -m pip install --upgrade pip
@@ -32,7 +33,8 @@ python3 -m pip install --user --upgrade pip
 python3 -m pip --version
 ```
 
-Instale o ambiente virtual
+1. Instale o ambiente virtual
+
 windows:
 ```
 py -m pip install --user virtualenv
@@ -42,7 +44,8 @@ Unix/macOS:
 python3 -m pip install --user virtualenv
 ```
 
-Crie o ambiente virtual
+1. Crie o ambiente virtual
+
 windows:
 ```
 py -m venv env
@@ -52,7 +55,8 @@ Unix/macOS:
 python3 -m venv env
 ```
 
-Ative o ambiente virtual
+1. Ative o ambiente virtual
+
 windows:
 ```
 .\env\Scripts\activate
