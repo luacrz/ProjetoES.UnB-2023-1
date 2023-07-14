@@ -23,6 +23,7 @@ from app.models import tables
 
 
 
+
 # Chamando a função para criar o objeto dentro do contexto da aplicação
 
 
@@ -32,4 +33,9 @@ def create_user():
         db.session.add(Rafaela)
         db.session.commit()
 
-#create_user()   
+#usuário: “pedro”, email: “pedro@unb.br”, senha: “asdfg”, perfil: professor
+#usuário: “ester”, email: “ester@unb.br” senha: “asdfg”, perfil: estudante
+#create_user()  
+#user = db.session.execute(db.select(tables.User).filter_by(id=1)).scalar_one()
+#db.session.delete(user)
+#db.session.commit() 
