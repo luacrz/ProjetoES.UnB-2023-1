@@ -33,7 +33,7 @@ python3 -m pip install --user --upgrade pip
 python3 -m pip --version
 ```
 
-1. Instale o ambiente virtual
+2. Instale o ambiente virtual
 
 windows:
 ```
@@ -44,7 +44,7 @@ Unix/macOS:
 python3 -m pip install --user virtualenv
 ```
 
-1. Crie o ambiente virtual
+3. Crie o ambiente virtual
 
 windows:
 ```
@@ -55,7 +55,7 @@ Unix/macOS:
 python3 -m venv env
 ```
 
-1. Ative o ambiente virtual
+4. Ative o ambiente virtual
 
 windows:
 ```
