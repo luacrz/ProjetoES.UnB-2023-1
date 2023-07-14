@@ -1,6 +1,6 @@
 from flask import Flask, render_template
-from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
 from flask_migrate import Migrate
 
 
@@ -10,10 +10,11 @@ app = Flask(__name__)
 app.config.from_object('config')
 
 
-#login_manager = LoginManager(app)
+
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
+#sklogin_manager = LoginManager(app)
 
 from app.models.tables import teste
 from app.controllers import default
