@@ -7,7 +7,7 @@ from app.models.tables import User
 
 @app.route("/")
 def index():
-    return "ok!"
+    return render_template("inicial.jinja2")
 
 @app.route("/test", defaults={'name': None})
 @app.route("/test/<name>")
@@ -41,3 +41,4 @@ def pag_aluno():
 @app.route("/pag_professor", methods = ['GET', 'POST'])
 def pag_professor():
     return render_template("pag_aluno.jinja2")
+

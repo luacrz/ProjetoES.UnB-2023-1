@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Registro</title>
+    <title>Cadastro</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -19,6 +19,7 @@
             padding: 20px;
             background-color: #fff;
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
         }
 
         h1 {
@@ -50,7 +51,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Registro</h1>
+        <h1>Cadastro</h1>
         <form action="{{ url_for('register') }}" method="post">
             <input type="text" name="usuario" placeholder="Usuário" required><br>
             <input type="text" name="name" placeholder="Nome" required><br>
