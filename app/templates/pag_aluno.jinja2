@@ -2,18 +2,75 @@
 <html>
 <head>
     <title>Página do Aluno</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f2f2f2;
+        }
+
+        .container {
+            max-width: 400px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            text-decoration: none;
+        }
+    </style>
 </head>
 <body>
-    <h1>Página do Aluno</h1>
+    <div class="container">
+        <h1>Página do Aluno</h1>
 
-    <!-- Barra de pesquisa -->
-    <form action="{{ url_for('realizar_prova') }}" method="GET">
-        <label for="id_prova">Digite o ID da prova:</label>
-        <input type="text" id="id_prova" name="id_prova" required>
-        <button type="submit">Realizar Prova</button>
-    </form>
+        <!-- Barra de pesquisa -->
+        <form action="{{ url_for('realizar_prova') }}" method="GET">
+            <label for="id_prova">Digite o ID da prova:</label>
+            <input type="text" id="id_prova" name="id_prova" required>
+            <button type="submit">Realizar Prova</button>
+        </form>
 
-    <!-- Botão para visualizar provas realizadas -->
-    <a href="{{ url_for('provas_realizadas') }}">Visualizar Provas Realizadas</a>
+        <!-- Botão para visualizar provas realizadas -->
+        <a href="{{ url_for('provas_realizadas') }}">Visualizar Provas Realizadas</a>
+    </div>
 </body>
 </html>

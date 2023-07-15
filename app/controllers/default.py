@@ -37,3 +37,7 @@ def create_question():
 @app.route("/pag_aluno", methods = ['GET', 'POST'])
 def pag_aluno():
     return render_template("pag_aluno.jinja2")
+
+@app.route("/pag_professor", methods = ['GET', 'POST'])
+def pag_professor():
+    return render_template("pag_aluno.jinja2")

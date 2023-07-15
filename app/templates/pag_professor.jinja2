@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Página do Professor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            background-color: #f2f2f2;
+            padding: 10px;
+        }
+
+        .menu {
+            display: flex;
+            justify-content: center;
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .menu li {
+            margin: 0 10px;
+        }
+
+        .menu a {
+            text-decoration: none;
+            color: #333;
+            padding: 5px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th,
+        table td {
+            padding: 8px;
+            border: 1px solid #ccc;
+        }
+
+        .menu-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <ul class="menu">
+            <li><a href="{{ url_for('criar_questao') }}">Criar Questão</a></li>
+            <li><a href="{{ url_for('criar_exame') }}">Criar Exame</a></li>
+            <li><a href="{{ url_for('visualizar_notas') }}">Visualizar Relatório de Notas</a></li>
+        </ul>
+    </div>
+
+    <div class="container">
+        <h1>Página do Professor</h1>
+
+        <div class="menu-container">
+            <h2>Opções:</h2>
+            <ul class="menu">
+                <li><a href="/create_question">Criar Questão</a></li>
+                <li><a href="/create_exam">Criar Exame</a></li>
+                <li><a href="{{ url_for('visualizar_notas') }}">Visualizar Relatório de Notas</a></li>
+            </ul>
+        </div>
+
+        <!-- Conteúdo da página -->
+        <!-- Aqui você pode adicionar o restante do seu conteúdo -->
+    </div>
+</body>
+</html>

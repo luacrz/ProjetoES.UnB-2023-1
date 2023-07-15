@@ -2,27 +2,165 @@
 <html>
 <head>
     <title>Criar Exame</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f2f2f2;
+        }
+
+        .container {
+            width: 400px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+        }
+
+        h1, h2 {
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        input[type="datetime-local"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type="checkbox"] {
+            margin-top: 10px;
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-    <h1>Criar Exame</h1>
-    <form action="{{ url_for('create_exam') }}" method="post">
-        <label for="start_time">Horário de Início:</label>
-        <input type="datetime-local" id="start_time" name="start_time" required><br><br>
-        
-        <label for="end_time">Horário de Término:</label>
-        <input type="datetime-local" id="end_time" name="end_time" required><br><br>
-        
-        <label for="comment">Comentário:</label>
-        <textarea id="comment" name="comment"></textarea><br><br>
-        
-        <h2>Selecione as Questões:</h2>
-        {% for question in questions %}
-            <input type="checkbox" id="question_{{ question.id }}" name="questions[]" value="{{ question.id }}">
-            <label for="question_{{ question.id }}">{{ question.statement }}</label><br>
-        {% endfor %}
-        
-        <br>
-        <input type="submit" value="Criar Exame">
-    </form>
+    <div class="container">
+        <h1>Criar Exame</h1>
+        <form action="{{ url_for('create_exam') }}" method="post">
+            <label for="start_time">Horário de Início:</label>
+            <input type="datetime-local" id="start_time" name="start_time" required>
+            
+            <label for="end_time">Horário de Término:</label>
+            <input type="datetime-local" id="end_time" name="end_time" required>
+            
+            <label for="comment">Comentário:</label>
+            <textarea id="comment" name="comment"></textarea>
+            
+            <label for="question-type">Tipo de Questão:</label>
+            <select id="question-type" name="question_type" required>
+                <option value="">Selecione o tipo de questão</option>
+                <option value="verdadeiro_falso">Verdadeiro ou Falso</option>
+                <option value="valor_numerico">Valor Numérico</option>
+                <option value="marcar_alternativa">Marcar Alternativa Correta</option>
+            </select>
+            <input type="button" value="Selecionar Questão" onclick="selectQuestion()">
+
+            <div id="question-container" class="question-container"></div>
+
+            <button id="add-question-button" class="add-question-button" type="button" onclick="addQuestion()">Adicionar Questão</button>
+
+            <input type="submit" value="Criar Exame">
+        </form>
+    </div>
+    <script>
+        function selectQuestion() {
+            var questionType = document.getElementById('question-type').value;
+            var questionContainer = document.getElementById('question-container');
+
+            // Limpar o conteúdo do contêiner
+            questionContainer.innerHTML = '';
+
+            if (questionType === 'verdadeiro_falso') {
+                var questionLabel = document.createElement('label');
+                questionLabel.classList.add('question-label');
+                questionLabel.textContent = 'Questão de Verdadeiro ou Falso:';
+
+                var questionInput = document.createElement('input');
+                questionInput.type = 'text';
+                questionInput.name = 'verdadeiro_falso_question';
+                questionInput.required = true;
+
+                questionContainer.appendChild(questionLabel);
+                questionContainer.appendChild(questionInput);
+            } else if (questionType === 'valor_numerico') {
+                var questionLabel = document.createElement('label');
+                questionLabel.classList.add('question-label');
+                questionLabel.textContent = 'Questão de Valor Numérico:';
+
+                var questionInput = document.createElement('input');
+                questionInput.type = 'text';
+                questionInput.name = 'valor_numerico_question';
+                questionInput.required = true;
+
+                questionContainer.appendChild(questionLabel);
+                questionContainer.appendChild(questionInput);
+            } else if (questionType === 'marcar_alternativa') {
+                var questionLabel = document.createElement('label');
+                questionLabel.classList.add('question-label');
+                questionLabel.textContent = 'Questão de Marcar Alternativa Correta:';
+
+                var questionInput = document.createElement('input');
+                questionInput.type = 'text';
+                questionInput.name = 'marcar_alternativa_question';
+                questionInput.required = true;
+
+                questionContainer.appendChild(questionLabel);
+                questionContainer.appendChild(questionInput);
+            }
+        }
+
+        function addQuestion() {
+            var questionContainer = document.getElementById('question-container');
+
+            var questionDiv = document.createElement('div');
+            questionDiv.classList.add('question-container');
+
+            var questionLabel = document.createElement('label');
+            questionLabel.classList.add('question-label');
+            questionLabel.textContent = 'Nova Questão:';
+
+            var questionInput = document.createElement('input');
+            questionInput.type = 'text';
+            questionInput.name = 'new_question';
+            questionInput.required = true;
+
+            var cancelButton = document.createElement('button');
+            cancelButton.textContent = 'X';
+            cancelButton.type = 'button';
+            cancelButton.classList.add('cancel-button');
+            cancelButton.addEventListener('click', function() {
+                questionContainer.removeChild(questionDiv);
+            });
+
+    questionDiv.appendChild(questionLabel);
+    questionDiv.appendChild(questionInput);
+    questionDiv.appendChild(cancelButton);
+    questionContainer.appendChild(questionDiv);
+}
+
+    </script>
 </body>
 </html>
