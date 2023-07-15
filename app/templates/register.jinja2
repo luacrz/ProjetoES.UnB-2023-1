@@ -2,21 +2,68 @@
 <html>
 <head>
     <title>Registro</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f2f2f2;
+        }
+
+        .container {
+            width: 300px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="email"],
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box; /* Adicionado para incluir o preenchimento e borda na largura total */
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-    <h1>Registro</h1>
-    <form action="{{ url_for('register') }}" method="post">
-        <input type = "text" usuario= "usuário" placeholder = "insira um usuário">
-        <input type = "text" name= "name" placeholder = "insira um nome">
-        <input type = "email" email= "email" placeholder = "insira um email">
-        <input type = "password" senha= "senha" placeholder = "insira uma senha">
-        <form>
-            <select name="plataforma" required="required">
+    <div class="container">
+        <h1>Registro</h1>
+        <form action="{{ url_for('register') }}" method="post">
+            <input type="text" name="usuario" placeholder="Usuário" required><br>
+            <input type="text" name="name" placeholder="Nome" required><br>
+            <input type="email" name="email" placeholder="Email" required><br>
+            <input type="password" name="senha" placeholder="Senha" required><br>
+            <select name="plataforma" required>
                 <option value="">Cargo</option>
-                <option value=False>Estudante</option>
-                <option value=True>Professor</option>
-            </select>
-        <input type="submit" value="Cadastrar">
-    </form>
+                <option value="False">Estudante</option>
+                <option value="True">Professor</option>
+            </select><br>
+            <input type="submit" value="Cadastrar">
+        </form>
+        <p>Já possui uma conta? <a href="/login">Logar</a></p>
+    </div>
 </body>
 </html>

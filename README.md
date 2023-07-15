@@ -81,5 +81,7 @@ Talvez seja necessário definir a variável de ambiente FLASK_APP: antes de usar
 ```
 set FLASK_APP=run.py
 ```
+O servidor Flask será iniciado e você verá a saída indicando em qual endereço IP e porta o aplicativo está sendo executado, copie e cole o endereço no navegador para visualizar. Você pode usar \login, \register ou qualquer rota que já esteja pronta no arquivo default.py da pasta controllers.
+
 
 

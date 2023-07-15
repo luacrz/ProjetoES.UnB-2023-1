@@ -1,75 +1,68 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Login</title>
+    <title>Tela de Login</title>
     <style>
-        /* Estilos gerais */
         body {
             font-family: Arial, sans-serif;
-            background-color: #f1f1f1;
             margin: 0;
             padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f2f2f2;
         }
 
         .container {
-            max-width: 400px;
-            margin: 0 auto;
+            width: 300px;
             padding: 20px;
             background-color: #fff;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
         }
 
         h1 {
             text-align: center;
-            margin-top: 0;
         }
 
-        form {
-            display: flex;
-            flex-direction: column;
-        }
-
+        input[type="text"],
+        input[type="password"],
         input[type="email"],
-        input[type="password"] {
-            margin-bottom: 10px;
+        select {
+            width: 100%;
             padding: 10px;
+            margin-bottom: 10px;
             border: 1px solid #ccc;
-            border-radius: 3px;
+            border-radius: 4px;
+            box-sizing: border-box; /* Adicionado para incluir o preenchimento e borda na largura total */
         }
 
         input[type="submit"] {
+            width: 100%;
             padding: 10px;
-            background-color: #4CAF50;
+            background-color: #4caf50;
             color: #fff;
             border: none;
-            border-radius: 3px;
+            border-radius: 4px;
             cursor: pointer;
-        }
-
-        input[type="submit"]:hover {
-            background-color: #45a049;
-        }
-
-        input[type="submit"]:focus {
-            outline: none;
-        }
-
-        /* Responsividade */
-        @media (max-width: 480px) {
-            .container {
-                max-width: 300px;
-            }
         }
     </style>
 </head>
 <body>
-    <h1>Login</h1>
-    <form action="{{ url_for('login') }}" method="post">
-        <input type = "email" name="email" placeholder = "insira seu email">
-        <input type = "password" name="senha" placeholder = "insira sua senha">
+    <div class="container">
+        <h1>Tela de Login</h1>
         
-        <input type="submit" value="Logar">
-    </form>
+        {% if error_message %}
+            <p class="error-message">{{ error_message }}</p>
+        {% endif %}
+        
+        <form method="POST" action="/">
+            <input type="text" name="username" placeholder="Usuário" required><br>
+            <input type="password" name="password" placeholder="Senha" required><br>
+            <input type="submit" value="Entrar">
+        </form>
+        
+        <p>Não possui uma conta? <a href="/register">Cadastre-se</a></p>
+    </div>
 </body>
 </html>
