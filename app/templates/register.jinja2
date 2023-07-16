@@ -53,11 +53,11 @@
     <div class="container">
         <h1>Cadastro</h1>
         <form action="{{ url_for('register') }}" method="post">
-            <input type="text" name="usuario" placeholder="Usuário" required><br>
+            <input type="text" name="username" placeholder="Usuário" required><br>
             <input type="text" name="name" placeholder="Nome" required><br>
             <input type="email" name="email" placeholder="Email" required><br>
             <input type="password" name="senha" placeholder="Senha" required><br>
-            <select name="plataforma" required>
+            <select name="role" required>
                 <option value="">Cargo</option>
                 <option value="False">Estudante</option>
                 <option value="True">Professor</option>

@@ -1,6 +1,7 @@
-from flask import render_template
+from flask import render_template, redirect, url_for, request
 from app import app, db
 from app.models.tables import User
+from flask_login import login_user, logout_user
 
 
 
@@ -9,21 +10,44 @@ from app.models.tables import User
 def index():
     return render_template("inicial.jinja2")
 
-@app.route("/test", defaults={'name': None})
-@app.route("/test/<name>")
-def teste(name):
-    if name:
-        return "Olá, %s!" % name
-    else:
-        return "Olá, usuário!"
+@app.route('/home', methods = ['GET']) 
+def home():
+    return render_template('home.html')
+
+
 
 @app.route("/register", methods = ['GET', 'POST'])
 def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        email = request.form['email']
+        pwd = request.form['senha']
+        name = request.form['name']
+        role_value = request.form['role']
+        role = bool(role_value)
+        user = User(username, email, pwd, name, role)
+        db.session.add(user)
+        db.session.commit()
     return render_template("register.jinja2")
 
-@app.route("/login", methods = ['GET', 'POST'])
+@app.route("/login", methods=['GET', 'POST'])
 def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        pwd = request.form['password']
+        user = User.query.filter_by(username = username).first()
+        if not user or not user.verify_password(pwd):
+            return redirect(url_for(('home')))
+        print("entrouu")
+        login_user(user)
+        return redirect(url_for(('home')))
     return render_template("login.jinja2")
+
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
 
 @app.route("/create_exam", methods = ['GET', 'POST'])
 def create_exam():

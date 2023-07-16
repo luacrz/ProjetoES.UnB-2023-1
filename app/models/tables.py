@@ -1,11 +1,19 @@
-from app import db
+from app import db, login_manager
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
+
+@login_manager.user_loader
+def get_user(user_id):
+        return User.query.filter_by(id=user_id).first()
+
 
 exam_question = db.Table('exam_question',
     db.Column('Exam_id', db.Integer, db.ForeignKey('exams.id'), primary_key=True),
     db.Column('Question_id', db.Integer, db.ForeignKey('questions.id'), primary_key=True)
 )
 
-class User(db.Model):
+
+class User(db.Model, UserMixin):
         __tablename__ = "users"
         id = db.Column(db.Integer, primary_key = True, autoincrement = True)
         username = db.Column(db.String, unique = True)
@@ -17,11 +25,13 @@ class User(db.Model):
         def __init__(self, username, email, password, name, role):
                 self.username = username
                 self.email = email
-                self.password = password
+                self.password = generate_password_hash(password)
                 self.name = name
                 self.role = role
         def __repr__(self):
                 return "<User %r>" % self.username
+        def verify_password(self, pwd):
+                return check_password_hash(self.password, pwd)
 
 class Question(db.Model):
         __tablename__ = "questions"

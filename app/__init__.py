@@ -14,7 +14,7 @@ app.config.from_object('config')
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-#sklogin_manager = LoginManager(app)
+login_manager = LoginManager(app)
 
 from app.models.tables import teste
 from app.controllers import default

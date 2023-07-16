@@ -57,7 +57,7 @@
             <p class="error-message">{{ error_message }}</p>
         {% endif %}
         
-        <form method="POST" action="/">
+        <form method="POST" action="{{ url_for('login') }}">
             <input type="text" name="username" placeholder="Usuário" required><br>
             <input type="password" name="password" placeholder="Senha" required><br>
             <input type="submit" value="Entrar">
