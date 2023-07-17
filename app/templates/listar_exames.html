@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Listar Exames</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f2f2f2;
+        }
+
+        .container {
+            width: 400px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .option-fields {
+            display: none;
+        }
+
+        .option-fields.active {
+            display: block;
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Listar Exames</h1>
+        <ul>
+            {% for exame in exames %}
+            <li>
+                <h3>Id do exame: {{ exame.id }}</h3>
+                <p>Horário de Início: {{ exame.start_time }}</p>
+                <p>Horário de Término: {{ exame.end_time }}</p>
+                <p>Comentário: {{ exame.comment }}</p>
+                <a href="{{ url_for('list_exam_questions', exame_id=exame.id) }}">Questões</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

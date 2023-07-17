@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Adicionar questão no Exame</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f2f2f2;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            width: 800px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .selection-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .selection-container select,
+        .selection-container input[type="checkbox"] {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        .submit-button {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        input[type="submit"] {
+            padding: 10px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Adicionar questão no Exame</h1>
+        <div class="selection-container">
+            <div>
+                <h2>Exames:</h2>
+                <form action="{{ url_for('add_quest_exam') }}" method="post">
+                    {% for exame in exames %}
+                    <label for="exame_id_{{ exame.id }}">Id do exame: {{ exame.id }}</label>
+                    <p>Horário de Início: {{ exame.start_time }}</p>
+                    <p>Horário de Término: {{ exame.end_time }}</p>
+                    <p>Comentário: {{ exame.comment }}</p>
+                    <input type="checkbox" id="exame_id_{{ exame.id }}" name="exame_id" value="{{ exame.id }}">
+                    {% endfor %}
+            </div>
+            <div>
+                <h2>Questões:</h2>
+                <label for="questao_ids">Selecione as questões:</label>
+                <ul>
+                    {% for questao in questoes %}
+                    <li>
+                        <h3>Id da questão: {{ questao.id }}</h3>
+                        <p>Enunciado: {{ questao.statement }}</p>
+                        {% if questao.question_type == 1 %}
+                            <p>Tipo: Verdadeiro/Falso</p>
+                            <p>Resposta: {{ questao.answer_VouF }}</p>
+                        {% elif questao.question_type == 2 %}
+                            <p>Tipo: A/B/C/D</p>
+                            <p>Resposta: {{ questao.answer_Mult }}</p>
+                        {% elif questao.question_type == 3 %}
+                            <p>Tipo: Numérico</p>
+                            <p>Resposta: {{ questao.answer_ValNum }}</p>
+                        {% endif %}
+                        <input type="checkbox" name="questao_ids_{{ questao.id }}" value="{{ questao.id }}">
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="submit-button">
+            <input type="submit" value="Criar Relação">
+        </div>
+        </form>
+    </div>
+</body>
+</html>

@@ -17,8 +17,10 @@ migrate = Migrate(app, db)
 login_manager = LoginManager(app)
 
 
+
+
+
 from app.controllers import default
-from app.models import tables
 
 
 

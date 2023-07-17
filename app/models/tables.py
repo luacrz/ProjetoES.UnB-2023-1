@@ -38,14 +38,18 @@ class Question(db.Model):
         id = db.Column(db.Integer, primary_key = True, autoincrement = True)
         statement = db.Column(db.Text)
         user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-        answer = db.Column(db.Boolean)
+        question_type = db.Column(db.Integer)
+        answer_VouF = db.Column(db.Boolean)
+        answer_Mult = db.Column(db.Integer)
+        answer_ValNum = db.Column(db.Integer)
+
         user = db.relationship('User', foreign_keys=user_id)
 
 
-        def __init__(self, statement, user_id, answer):
+        def __init__(self, statement, question_type,  user_id):
                 self.statement = statement
+                self.question_type = question_type
                 self.user_id = user_id
-                self.answer = answer
         
         def __repr__(self):
             return "<Question %r>" % self.id
@@ -73,22 +77,6 @@ class Exam(db.Model):
                return "<Exam %r>" % self.id
        
 
-class teste(db.Model):
-       __tablename__ = "testes"
-
-
-       id = db.Column(db.Integer, primary_key = True, autoincrement = True)
-       username = db.Column(db.String)
-       email = db.Column(db.String)
-       
-
-       
-       def __init__(self, username, email):
-                self.username = username
-                self.email = email
-
-       def __repr__(self):
-               return "<test %r>" % self.username
        
 class FinalizedExam(db.Model):
        __tablename__ = "finalized_exams"

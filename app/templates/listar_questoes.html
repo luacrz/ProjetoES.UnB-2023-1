@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Criar Questão</title>
+    <title>Listar Questões</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -42,6 +42,14 @@
             box-sizing: border-box;
         }
 
+        .option-fields {
+            display: none;
+        }
+
+        .option-fields.active {
+            display: block;
+        }
+
         input[type="submit"] {
             width: 100%;
             padding: 10px;
@@ -55,20 +63,27 @@
 </head>
 <body>
     <div class="container">
-        <h1>Criar Questão</h1>
-        <form action="{{ url_for('create_question') }}" method="post">
-            <label for="comment">Enunciado:</label>
-            <textarea id="comment" name="comment"></textarea>
-            
-            <label for="plataforma">Resposta:</label>
-            <select name="plataforma" required>
-                <option value="">Selecione</option>
-                <option value="True">Verdadeiro</option>
-                <option value="False">Falso</option>
-            </select>
-            
-            <input type="submit" value="Criar Questão">
-        </form>
+        <h1>Listar Questões</h1>
+        <ul>
+            {% for questao in questoes %}
+            <li>
+                <h3>Id da questão: {{ questao.id}}</h3> <!-- Exemplo: exibindo o enunciado da questão -->
+                <p>Enunciado: {{ questao.statement }}
+                {% if questao.question_type == 1 %}
+                    <p>Tipo: Verdadeiro/Falso</p>
+                    <p>Resposta: {{ questao.answer_VouF }}</p> <!-- Exemplo: exibindo a resposta V ou F -->
+                {% elif questao.question_type == 2 %}
+                    <p>Tipo: A/B/C/D</p>
+                    <p>Resposta: {{ questao.answer_Mult }}</p> <!-- Exemplo: exibindo a resposta múltipla escolha -->
+                {% elif questao.question_type == 3 %}
+                    <p>Tipo: Numérico</p>
+                    <p>Resposta: {{ questao.answer_ValNum }}</p> <!-- Exemplo: exibindo a resposta numérica -->
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
     </div>
+
+
 </body>
 </html>
