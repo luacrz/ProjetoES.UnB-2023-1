@@ -83,5 +83,5 @@ set FLASK_APP=run.py
 ```
 O servidor Flask será iniciado e você verá a saída indicando em qual endereço IP e porta o aplicativo está sendo executado, copie e cole o endereço no navegador para visualizar. Você pode usar \login, \register ou qualquer rota que já esteja pronta no arquivo default.py da pasta controllers.
 
-
+Um professor já pode criar questões, exames e adicionar essas questões nos exames. Ele também pode ver isso, basta logar um professor valido como "pedro" e "asdfg", clickar em página do professor, e clickar em qualquer um dos hyperlinks do cabeçalho (exceto "Visualizar Relatório de Notas")
 
