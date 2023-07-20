@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Responder Prova</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f2f2f2;
+        }
+
+        .container {
+            width: 400px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        textarea,
+        select,
+        input[type="checkbox"],
+        input[type="radio"],
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .alternativas-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .alternativa {
+            display: flex;
+            align-items: center;
+            flex-direction: row;
+        }
+
+        .radio-label {
+            margin-right: 5px;
+        }
+
+        .option-fields {
+            display: none;
+        }
+
+        .option-fields.active {
+            display: block;
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Listar Questões</h1>
+        <form action="{{ url_for('submit_answers', exame_id=exame_id) }}" method="post">
+            <ul>
+                {% for questao in questoes %}
+                <li>
+                    <h3>Questão {{ numero_questao }}</h3>
+                    <h3>Questão {{ loop.index }}</h3>
+                    <p>Enunciado: {{ questao.statement }}</p>
+                    {% if questao.question_type == 1 %}
+                        <div class="alternativas-container">
+                            <div class="alternativa">
+                                <label class="radio-label" for="V">Verdadeiro</label>
+                                <input type="radio" name="respostas[{{ questao.id }}]" value="V" id="V">
+                            </div>
+                            <div class="alternativa">
+                                <label class="radio-label" for="F">Falso</label>
+                                <input type="radio" name="respostas[{{ questao.id }}]" value="F" id="F">
+                            </div>
+                        </div>
+                    {% elif questao.question_type == 2 %}
+                        <div class="alternativas-container">
+                            <div class="alternativa">
+                                <label class="radio-label" for="A">a.</label>
+                                <input type="radio" name="respostas[{{ questao.id }}]" value="A" id="A">
+                            </div>
+                            <div class="alternativa">
+                                <label class="radio-label" for="B">b.</label>
+                                <input type="radio" name="respostas[{{ questao.id }}]" value="B" id="B">
+                            </div>
+                            <div class="alternativa">
+                                <label class="radio-label" for="C">c.</label>
+                                <input type="radio" name="respostas[{{ questao.id }}]" value="C" id="C">
+                            </div>
+                            <div class="alternativa">
+                                <label class="radio-label" for="D">d.</label>
+                                <input type="radio" name="respostas[{{ questao.id }}]" value="D" id="D">
+                            </div>
+                        </div>
+                    {% elif questao.question_type == 3 %}
+                        <input type="number" name="respostas[{{ questao.id }}]" step="1">
+                    {% endif %}
+                    <input type="hidden" name="questao_ids[]" value="{{ questao.id }}">
+                </li>
+                {% endfor %}
+            </ul>
+            <input type="submit" value="Enviar Respostas">
+        </form>
+    </div>
+</body>
+</html>

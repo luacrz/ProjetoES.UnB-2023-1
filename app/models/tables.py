@@ -86,9 +86,9 @@ class FinalizedExam(db.Model):
        answers_replied = db.Column(db.Text)
 
        def __init__(self, user_id, exam_id, answers_replied):
-                self.start_time = user_id
-                self.end_time = exam_id
-                self.user_id = answers_replied
+                self.user_id = user_id
+                self.exam_id = exam_id
+                self.answers_replied = answers_replied
        def __repr__(self):
                return "<FinalizedExam %r>" % self.id
                

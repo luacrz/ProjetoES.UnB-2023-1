@@ -43,7 +43,8 @@ def login():
         if not user or not user.verify_password(pwd):
             return redirect(url_for(('home')))
         login_user(user)
-        return redirect(url_for(('home')))
+        if current_user.role == 1: return redirect(url_for(('pag_professor')))
+        else : return redirect(url_for(('pag_aluno')))
     return render_template("login.jinja2")
 
 
@@ -172,3 +173,34 @@ def list_exam_questions(exame_id):
     questoes = exame.exam_question
 
     return render_template("list_exam_questions.html", questoes=questoes)
+
+@app.route("/submit_answers/<exame_id>", methods=["GET", "POST"])
+def submit_answers(exame_id):
+    if request.method == "POST":
+        respostas = {}
+        for key, value in request.form.items():
+            if key.startswith('respostas['):
+                questao_id = key.split('[')[1].split(']')[0]
+                respostas[questao_id] = value
+
+        Respostas_formatadas = ", ".join(f"{questao_id}_{resposta}" for questao_id, resposta in respostas.items())
+        print(Respostas_formatadas)
+        Exame_finalizado = tables.FinalizedExam(current_user.id, exame_id, Respostas_formatadas)
+        db.session.add(Exame_finalizado)
+        db.session.commit()
+        return redirect(url_for('pag_aluno'))
+
+
+    exame = tables.Exam.query.get(exame_id)
+    questoes = exame.exam_question
+    return render_template("responder_prova.html", questoes=questoes, exame_id=exame_id)
+
+@app.route("/procurar_exames") #Lista todos os exames do Usuário atual
+def procurar_exames():
+    exames = tables.Exam.query.all()
+    return render_template("procurar_exames.html", exames=exames)
+
+@app.route("/exames_feitos", methods=["GET"])
+def exames_feitos():
+    finalized_exams = tables.FinalizedExam.query.all()
+    return render_template("exames_feitos.html", finalized_exams=finalized_exams)
