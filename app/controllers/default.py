@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, request
+from flask import render_template, redirect, url_for, request, flash
 from app import app, db
 from app.models.tables import User
 from app.models import tables
@@ -174,8 +174,35 @@ def list_exam_questions(exame_id):
 
     return render_template("list_exam_questions.html", questoes=questoes)
 
+from flask import redirect, url_for, flash, render_template, request
+from datetime import datetime
+
 @app.route("/submit_answers/<exame_id>", methods=["GET", "POST"])
 def submit_answers(exame_id):
+    exame = tables.Exam.query.get(exame_id)
+
+    
+
+    if exame is None:
+        flash("Exame não encontrado", "error")
+        return redirect(url_for('procurar_exames'))
+    
+    user_id = current_user.id  # Substitua pelo ID do usuário atual
+    exam_realizado = tables.FinalizedExam.query.filter_by(user_id=user_id, exam_id=exame.id).first()
+    if exam_realizado is not None:
+        flash(f"Você já realizou o exame {exame_id} anteriormente", "error")
+        return redirect(url_for('procurar_exames'))
+
+    current_time = datetime.now()
+    if exame.end_time < current_time:
+        flash(f"O exame {exame_id} já expirou", "error")
+        return redirect(url_for('procurar_exames'))
+
+    if exame.start_time > current_time:
+        flash(f"O exame {exame_id} ainda não abriu", "error")
+        return redirect(url_for('procurar_exames'))
+
+
     if request.method == "POST":
         respostas = {}
         for key, value in request.form.items():
@@ -188,17 +215,43 @@ def submit_answers(exame_id):
         Exame_finalizado = tables.FinalizedExam(current_user.id, exame_id, Respostas_formatadas)
         db.session.add(Exame_finalizado)
         db.session.commit()
+
+        # Exemplo de como definir uma mensagem de sucesso após a conclusão do exame
+        flash("Prova realizada com sucesso!", "success")
+
         return redirect(url_for('pag_aluno'))
 
-
-    exame = tables.Exam.query.get(exame_id)
     questoes = exame.exam_question
     return render_template("responder_prova.html", questoes=questoes, exame_id=exame_id)
 
-@app.route("/procurar_exames") #Lista todos os exames do Usuário atual
+
+@app.route("/procurar_exames")  # Lista todos os exames do Usuário atual
 def procurar_exames():
+    current_time = datetime.now()
+    exames_feitos = tables.FinalizedExam.query.filter_by(user_id=current_user.id).all()
+    exames_feitos_ids = [exame.exam_id for exame in exames_feitos]
     exames = tables.Exam.query.all()
-    return render_template("procurar_exames.html", exames=exames)
+
+    
+    exames_info = []
+    for exame in exames:
+        status = ""
+        if exame.id in exames_feitos_ids:
+            status = "Exame Feito"
+        elif exame.start_time > current_time:
+            status = "Exame ainda não abriu"
+        elif exame.end_time < current_time:
+            status = "Exame expirou"
+
+        exames_info.append({
+            "id": exame.id,
+            "start_time": exame.start_time,
+            "end_time": exame.end_time,
+            "comment": exame.comment,
+            "status": status
+        })
+
+    return render_template("procurar_exames.html", exames_info=exames_info)
 
 @app.route("/exames_feitos", methods=["GET"])
 def exames_feitos():

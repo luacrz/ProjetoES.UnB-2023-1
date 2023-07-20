@@ -96,34 +96,33 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        <ul class="menu">
-            <li><a href="{{ url_for('pag_aluno') }}"><i class="fas fa-home"></i></a></li>
-            <li><a href="{{ url_for('procurar_exames')}}"><i class="fas fa-search"></i> Procurar Exames</a></li>
-            <li><a href="{{ url_for('exames_feitos')}}"><i class="fas fa-check-circle"></i> Exames feitos</a></li>
-            <li><a href="{{ url_for('logout')}}"><i class="fas fa-sign-out-alt"></i> Sair</a></li>   
-        </ul>
-    </div>
-
-    <div class="container">
-        <h1 style="text-align: center;">Escolha um Exame</h1>
-        
-        <div class="search-form">
-            <input type="text" class="search-input" placeholder="Digite o ID do exame">
-            <button class="search-btn">Buscar</button>
-        </div>
-        
-        <div class="exams-wrapper">
-            {% for exame in exames %}
-            <div class="exam-card">
-                <h3>Id do exame: {{ exame.id }}</h3>
-                <p>Horário de Início: {{ exame.start_time }}</p>
-                <p>Horário de Término: {{ exame.end_time }}</p>
-                <p>Comentário: {{ exame.comment }}</p>
-                <a href="{{ url_for('submit_answers', exame_id=exame.id) }}" class="create-exam-btn">Fazer Exame</a>
+    <div class="exams-wrapper">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="error-messages">
+                {% for category, message in messages %}
+                    <p class="error-message">{{ message }}</p>
+                {% endfor %}
             </div>
-            {% endfor %}
+        {% endif %}
+        {% endwith %}
+        {% for exame in exames_info %}
+        <div class="exam-card">
+            <h3>Id do exame: {{ exame.id }}</h3>
+            <p>Horário de Início: {{ exame.start_time }}</p>
+            <p>Horário de Término: {{ exame.end_time }}</p>
+            <p>Comentário: {{ exame.comment }}</p>
+            {% if exame.status == "Exame Feito" %}
+                <button class="create-exam-btn">Exame Feito</button>
+            {% elif exame.status == "Exame ainda não abriu" %}
+                <button class="create-exam-btn">Exame ainda não abriu</button>
+            {% elif exame.status == "Exame expirou" %}
+                <button class="create-exam-btn">Exame expirou</button>
+            {% else %}
+                <a href="{{ url_for('submit_answers', exame_id=exame.id) }}" class="create-exam-btn">Fazer Exame</a>
+            {% endif %}
         </div>
+        {% endfor %}
     </div>
 </body>
 </html>
