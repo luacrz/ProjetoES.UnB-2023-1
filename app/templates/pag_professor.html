@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Página do Professor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -10,7 +11,7 @@
         }
 
         .header {
-            background-color: #f2f2f2;
+            background-color: #7edd7b;
             padding: 10px;
         }
 
@@ -33,32 +34,92 @@
         }
 
         .container {
-            max-width: 800px;
+            display: flex;
+            max-width: 900px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 25px;
         }
 
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
+        .content {
+            flex: 1;
         }
+
+        .user-info {
+            background-color: #f2f2f2;
+            padding: 10px;
+            border-radius: 8px;
+            width: 280px;
+            margin-left: 20px;
+        }
+
+        .user-avatar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: #ddd;
+            margin-bottom: 10px;
+        }
+
+        .user-avatar i {
+            font-size: 40px;
+        }
+
+        .explanation-container {
+            background-color: #f2f2f2;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .create-exam-btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #4caf50;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+
     </style>
 </head>
 <body>
     <div class="header">
         <ul class="menu">
-            <li><a href="{{ url_for('create_question') }}">Criar Questão</a></li>
-            <li><a href="{{ url_for('create_exam') }}">Criar Exame</a></li>
-            <li><a href="{{ url_for('visualizar_notas') }}">Visualizar Relatório de Notas</a></li>
-            <li><a href="{{ url_for('listar_questoes') }}">Listar Questões</a></li>
-            <li><a href="{{ url_for('listar_exames') }}">Listar Exames</a></li>
-            <li><a href="{{ url_for('add_quest_exam') }}">Cadastrar Questões em Exames</a></li>
-            <li><a href="{{ url_for('logout')}}">Sair</a></li>   
+            <li><a href="{{ url_for('pag_professor') }}"><i class="fas fa-home"></i></a></li>
+            <li><a href="{{ url_for('create_question') }}"><i class="fas fa-plus"></i> Criar Questão</a></li>
+            <li><a href="{{ url_for('create_exam') }}"><i class="fas fa-plus"></i> Criar Exame</a></li>
+            <li><a href="{{ url_for('visualizar_notas') }}"><i class="fas fa-chart-bar"></i> Relatório de Notas</a></li>
+            <li><a href="{{ url_for('listar_questoes') }}"><i class="fas fa-list"></i> Questões</a></li>
+            <li><a href="{{ url_for('listar_exames') }}"><i class="fas fa-list"></i> Exames</a></li>
+            <li><a href="{{ url_for('add_quest_exam') }}"><i class="fas fa-tasks"></i> Cadastrar Questões em Exames</a></li>
+            <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Sair</a></li>   
         </ul>
     </div>
 
     <div class="container">
-        <h1>Página do Professor</h1>
+        <div class="content">
+            <h1>Página do Professor</h1>
+            <div class="explanation-container">
+                <p>Aqui, como professor, você tem a capacidade de criar e gerenciar questões e exames</p>
+                <a href="{{ url_for('create_exam') }}" class="create-exam-btn">Criar Exame</a>
+            </div>
+            <!-- Conteúdo da página do professor aqui -->
+        </div>
+
+        <div class="user-info">
+            <div class="user-avatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <p><strong>Nome:</strong> {{ current_user.username }}</p>
+            <p><strong>ID:</strong> {{ current_user.id }}</p>
+            <p><strong>E-mail:</strong> {{ current_user.email }}</p>
+
+        </div>
     </div>
 </body>
 </html>

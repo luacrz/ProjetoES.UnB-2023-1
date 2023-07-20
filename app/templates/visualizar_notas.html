@@ -2,52 +2,105 @@
 <html>
 <head>
     <title>Página do Professor - Notas dos Alunos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        /* Estilos gerais da página */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            background-color: #f2f2f2;
         }
 
+        /* Estilos do cabeçalho */
         .header {
-            background-color: #f2f2f2;
+            background-color: #7edd7b;
             padding: 10px;
         }
 
+        /* Estilos do menu */
+        .menu {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            background-color: #7edd7b;
+        }
+
+        .menu li {
+            margin: 0 10px;
+        }
+
+        .menu a {
+            text-decoration: none;
+            color: #333;
+            padding: 5px;
+        }
+
         .container {
-            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            max-width: 400px;
             margin: 0 auto;
             padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
         }
 
-        h1 {
+        h1, h2 {
             text-align: center;
-            margin-bottom: 20px;
         }
 
-        table {
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        input[type="datetime-local"],
+        textarea {
             width: 100%;
-            border-collapse: collapse;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
         }
 
-        table th,
-        table td {
-            padding: 8px;
-            border: 1px solid #ccc;
+        input[type="checkbox"] {
+            margin-top: 10px;
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
     <div class="header">
         <ul class="menu">
-            <li><a href="{{ url_for('create_question') }}">Criar Questão</a></li>
-            <li><a href="{{ url_for('create_exam') }}">Criar Exame</a></li>
-            <li><a href="{{ url_for('visualizar_notas') }}">Visualizar Relatório de Notas</a></li>
+            <li><a href="{{ url_for('pag_professor') }}"><i class="fas fa-home"></i></a></li>
+            <li><a href="{{ url_for('create_question') }}"><i class="fas fa-plus"></i> Criar Questão</a></li>
+            <li><a href="{{ url_for('create_exam') }}"><i class="fas fa-plus"></i> Criar Exame</a></li>
+            <li><a href="{{ url_for('visualizar_notas') }}"><i class="fas fa-chart-bar"></i> Relatório de Notas</a></li>
+            <li><a href="{{ url_for('listar_questoes') }}"><i class="fas fa-list"></i> Questões</a></li>
+            <li><a href="{{ url_for('listar_exames') }}"><i class="fas fa-list"></i> Exames</a></li>
+            <li><a href="{{ url_for('add_quest_exam') }}"><i class="fas fa-tasks"></i> Cadastrar Questões em Exames</a></li>
+            <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Sair</a></li>   
         </ul>
     </div>
 
     <div class="container">
-        <h1>Página do Professor - Notas dos Alunos</h1>
+        <h1>Notas dos Alunos</h1>
 
         <div>
             <h2>Visualizar Notas dos Alunos</h2>

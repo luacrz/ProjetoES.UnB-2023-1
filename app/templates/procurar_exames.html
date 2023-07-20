@@ -2,79 +2,128 @@
 <html>
 <head>
     <title>Escolha um Exame</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Página do Aluno</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+        }
+
+        .header {
+            background-color: #7edd7b;
+            padding: 10px;
+        }
+
+        .menu {
             display: flex;
-            align-items: center;
             justify-content: center;
-            height: 100vh;
-            background-color: #f2f2f2;
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .menu li {
+            margin: 0 10px;
+        }
+
+        .menu a {
+            text-decoration: none;
+            color: #333;
+            padding: 5px;
         }
 
         .container {
-            width: 400px;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-            border-radius: 8px;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 25px;
         }
 
-        h1 {
+        .exams-wrapper {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .exam-card {
+            background-color: #f2f2f2;
+            padding: 15px;
+            border-radius: 8px;
+            width: 400px;
+            margin: 10px;
+        }
+
+        .exam-card h3 {
+            margin-top: 0;
+        }
+
+        .exam-card p {
+            margin: 5px 0;
+        }
+
+        .create-exam-btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #4caf50;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+
+        .search-form {
             text-align: center;
             margin-bottom: 20px;
         }
 
-        label {
-            display: block;
-            margin-top: 10px;
-        }
-
-        textarea,
-        select {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
+        .search-input {
+            padding: 8px;
+            font-size: 16px;
             border-radius: 4px;
-            box-sizing: border-box;
         }
 
-        .option-fields {
-            display: none;
-        }
-
-        .option-fields.active {
-            display: block;
-        }
-
-        input[type="submit"] {
-            width: 100%;
-            padding: 10px;
-            background-color: #4caf50;
+        .search-btn {
+            padding: 8px 20px;
+            background-color: #000000;
             color: #fff;
             border: none;
             border-radius: 4px;
             cursor: pointer;
         }
+
     </style>
 </head>
 <body>
+    <div class="header">
+        <ul class="menu">
+            <li><a href="{{ url_for('pag_aluno') }}"><i class="fas fa-home"></i></a></li>
+            <li><a href="{{ url_for('procurar_exames')}}"><i class="fas fa-search"></i> Procurar Exames</a></li>
+            <li><a href="{{ url_for('exames_feitos')}}"><i class="fas fa-check-circle"></i> Exames feitos</a></li>
+            <li><a href="{{ url_for('logout')}}"><i class="fas fa-sign-out-alt"></i> Sair</a></li>   
+        </ul>
+    </div>
+
     <div class="container">
-        <h1>Escolha um Exame</h1>
-        <ul>
+        <h1 style="text-align: center;">Escolha um Exame</h1>
+        
+        <div class="search-form">
+            <input type="text" class="search-input" placeholder="Digite o ID do exame">
+            <button class="search-btn">Buscar</button>
+        </div>
+        
+        <div class="exams-wrapper">
             {% for exame in exames %}
-            <li>
+            <div class="exam-card">
                 <h3>Id do exame: {{ exame.id }}</h3>
                 <p>Horário de Início: {{ exame.start_time }}</p>
                 <p>Horário de Término: {{ exame.end_time }}</p>
                 <p>Comentário: {{ exame.comment }}</p>
-                <a href="{{ url_for('submit_answers', exame_id=exame.id) }}">Fazer Exame</a>
-            </li>
+                <a href="{{ url_for('submit_answers', exame_id=exame.id) }}" class="create-exam-btn">Fazer Exame</a>
+            </div>
             {% endfor %}
-        </ul>
+        </div>
     </div>
 </body>
 </html>
