@@ -100,7 +100,7 @@
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             <div class="error-messages">
-                {% for category, message in messages %}
+                {% for category, message in messages %} 
                     <p class="error-message">{{ message }}</p>
                 {% endfor %}
             </div>

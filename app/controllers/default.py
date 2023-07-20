@@ -202,7 +202,7 @@ def submit_answers(exame_id):
         flash(f"O exame {exame_id} ainda não abriu", "error")
         return redirect(url_for('procurar_exames'))
 
-
+ 
     if request.method == "POST":
         respostas = {}
         for key, value in request.form.items():
