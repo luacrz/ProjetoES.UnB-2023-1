@@ -41,7 +41,8 @@ def login():
         pwd = request.form['password']
         user = User.query.filter_by(username = username).first()
         if not user or not user.verify_password(pwd):
-            return redirect(url_for(('home')))
+            flash("Credenciais inválidas")
+            return redirect(url_for(('login')))
         login_user(user)
         if current_user.role == 1: return redirect(url_for(('pag_professor')))
         else : return redirect(url_for(('pag_aluno')))
@@ -53,7 +54,7 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
-@app.route("/create_exam", methods=['GET', 'POST']) #Página de Criar Exames
+@app.route("/create_exam", methods=['GET', 'POST'])
 def create_exam():
     if request.method == 'POST':
         start_time_str = request.form['start_time']
@@ -64,7 +65,8 @@ def create_exam():
         exam = tables.Exam(start_time=start_time, end_time=end_time, user_id=current_user.id, comment=comment)
         db.session.add(exam)
         db.session.commit()
-        return redirect(url_for('pag_professor'))
+
+        return redirect(url_for('add_quest_exam', exam_id=exam.id))
     
     return render_template("create_exam.html")
 
@@ -141,28 +143,29 @@ def selecionar_questoes():
         questoes = tables.Question.query.filter_by(user_id =current_user.id)
         return render_template("selecionar_questoes.html", questoes=questoes)
 
-@app.route("/add_quest_exam", methods=["GET", "POST"])
-def add_quest_exam():
+@app.route("/add_quest_exam/<int:exam_id>", methods=["GET", "POST"])
+def add_quest_exam(exam_id):
     if request.method == "POST":
-        exame_id = request.form.get("exame_id")
         questao_ids = [key.split('_')[2] for key in request.form if key.startswith('questao_ids_')]
         print(questao_ids)
-        
-        exame = tables.Exam.query.get(exame_id)
+
+        exame = tables.Exam.query.get(exam_id)
         if exame is None:
             return "Exame não encontrado!"
-        
+
         for questao_id in questao_ids:
             questao = tables.Question.query.get(questao_id)
             if questao is not None:
+                # Adicionar a questão selecionada ao relacionamento exam_question
                 exame.exam_question.append(questao)
 
         db.session.commit()
         return redirect(url_for('pag_professor'))
 
-    exames = tables.Exam.query.filter_by(user_id=current_user.id).all()
+
     questoes = tables.Question.query.filter_by(user_id=current_user.id).all()
-    return render_template("add_quest_exam.html", exames=exames, questoes=questoes)
+    return render_template("add_quest_exam.html", exam_id=exam_id, questoes=questoes)
+
 
 @app.route("/exam/<exame_id>")
 def list_exam_questions(exame_id):
@@ -257,3 +260,9 @@ def procurar_exames():
 def exames_feitos():
     finalized_exams = tables.FinalizedExam.query.all()
     return render_template("exames_feitos.html", finalized_exams=finalized_exams)
+
+@app.route("/view_finalized_exams/<int:exam_id>")
+def view_finalized_exams(exam_id):
+    exam = tables.Exam.query.get_or_404(exam_id)
+    finalized_exams = tables.FinalizedExam.query.filter_by(exam_id=exam_id).all()
+    return render_template("view_finalized_exams.html", exam=exam, finalized_exams=finalized_exams)

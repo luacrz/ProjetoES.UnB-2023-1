@@ -99,7 +99,6 @@
             <li><a href="{{ url_for('visualizar_notas') }}"><i class="fas fa-chart-bar"></i> Relatório de Notas</a></li>
             <li><a href="{{ url_for('listar_questoes') }}"><i class="fas fa-list"></i> Questões</a></li>
             <li><a href="{{ url_for('listar_exames') }}"><i class="fas fa-list"></i> Exames</a></li>
-            <li><a href="{{ url_for('add_quest_exam') }}"><i class="fas fa-tasks"></i> Cadastrar Questões em Exames</a></li>
             <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Sair</a></li>   
         </ul>
     </div>
@@ -145,5 +144,23 @@
             <input type="submit" value="Criar Questão">
         </form>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tipoSelect = document.getElementById('tipo');
+            const vfFields = document.getElementById('vf-fields');
+            const abcFields = document.getElementById('abc-fields');
+            const numFields = document.getElementById('num-fields');
+
+            function showFields() {
+                vfFields.style.display = tipoSelect.value === 'VF' ? 'block' : 'none';
+                abcFields.style.display = tipoSelect.value === 'ABC' ? 'block' : 'none';
+                numFields.style.display = tipoSelect.value === 'NUM' ? 'block' : 'none';
+            }
+
+            tipoSelect.addEventListener('change', showFields);
+            showFields(); 
+        });
+    </script>
+
 </body>
 </html>

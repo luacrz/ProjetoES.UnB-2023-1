@@ -81,7 +81,19 @@ Talvez seja necessário definir a variável de ambiente FLASK_APP: antes de usar
 ```
 set FLASK_APP=run.py
 ```
-O servidor Flask será iniciado e você verá a saída indicando em qual endereço IP e porta o aplicativo está sendo executado, copie e cole o endereço no navegador para visualizar. Você pode usar \login, \register ou qualquer rota que já esteja pronta no arquivo default.py da pasta controllers.
+O servidor Flask será iniciado e você verá a saída indicando em qual endereço IP e porta o aplicativo está sendo executado, copie e cole o endereço no navegador para visualizar.
 
-Um professor já pode criar questões, exames e adicionar essas questões nos exames. Ele também pode ver isso, basta logar um professor valido como "pedro" e "asdfg", clickar em página do professor, e clickar em qualquer um dos hyperlinks do cabeçalho (exceto "Visualizar Relatório de Notas")
+Credencias validas para professor - username: "pedro" senha : "asdfg" 
 
+Credencias validas para aluno - username: "ester" senha : "asdfg" 
+
+Você pode estar também registrando professores e alunos, além de criar as questões e exames. 
+
+O professor pode acessar qualquer um dos hyperlinks do cabeçalho (exceto "Visualizar Relatório de Notas", que está atualmente dentro da função de Listar Exames). 
+
+ 
+
+O professor pode criar questões, exames, além de poder ver o conteúdo dessas provas como suas questões e um relatório que contém as questões respondidas dos alunos. No relatório os alunos estão separados como ID, seguido das respostas. 
+
+O aluno pode fazer os exames, além de ver as questões que ele respondeu em um exame. Caso o exame já tiver sido feito o aluno não poderá editar e nem fazer novamente a prova. O aluno também não pode fazer a prova se a prova não tiver começado ou já tiver com o tempo esgotado. 
+ 

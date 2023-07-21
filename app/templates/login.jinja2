@@ -65,5 +65,16 @@
         
         <p>Não possui uma conta? <a href="/register">Cadastre-se</a></p>
     </div>
+    <div class = "alert alert-warning">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class=flashes>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+        {% endwith %}
+    </div>
 </body>
 </html>
