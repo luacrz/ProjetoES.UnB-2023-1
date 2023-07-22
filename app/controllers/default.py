@@ -6,6 +6,46 @@ from flask_login import login_user, logout_user, current_user
 from datetime import datetime
 
 
+def calcular_nota_exame(exam_id, user_id):
+    finalized_exam = tables.FinalizedExam.query.filter_by(user_id=user_id, exam_id=exam_id).first()
+
+    if finalized_exam is None:
+        return 0.0
+
+    answers_replied = finalized_exam.answers_replied.split(", ")
+    nota_total = 0.0
+
+    for resposta in answers_replied:
+        questao_id, resposta_aluno = resposta.split('_')
+        questao = tables.Question.query.get(questao_id)
+        if questao is not None:
+            if questao.question_type == 1:
+                resposta_correta = "V" if questao.answer_VouF else "F"
+                if resposta_aluno == resposta_correta:
+                    nota_total += questao.exam_questions.filter_by(Exam_id=exam_id).first().nota
+            elif questao.question_type == 2:
+                resposta_correta = questao.answer_Mult
+                if resposta_aluno == resposta_correta:
+                    nota_total += questao.exam_questions.filter_by(Exam_id=exam_id).first().nota
+            elif questao.question_type == 3:
+                resposta_correta = str(questao.answer_ValNum)
+                if resposta_aluno == resposta_correta:
+                    nota_total += questao.exam_questions.filter_by(Exam_id=exam_id).first().nota
+
+    return nota_total
+
+def calcular_nota_maxima_exame(exam_id):
+    exam_questions = tables.ExamQuestion.query.filter_by(Exam_id=exam_id).all()
+
+    nota_maxima = 0.0
+
+    for exam_question in exam_questions:
+        nota_maxima += exam_question.nota
+
+    return nota_maxima
+    
+
+
 
 
 @app.route("/")
@@ -143,11 +183,11 @@ def selecionar_questoes():
         questoes = tables.Question.query.filter_by(user_id =current_user.id)
         return render_template("selecionar_questoes.html", questoes=questoes)
 
+
 @app.route("/add_quest_exam/<int:exam_id>", methods=["GET", "POST"])
 def add_quest_exam(exam_id):
     if request.method == "POST":
         questao_ids = [key.split('_')[2] for key in request.form if key.startswith('questao_ids_')]
-        print(questao_ids)
 
         exame = tables.Exam.query.get(exam_id)
         if exame is None:
@@ -156,41 +196,59 @@ def add_quest_exam(exam_id):
         for questao_id in questao_ids:
             questao = tables.Question.query.get(questao_id)
             if questao is not None:
-                # Adicionar a questão selecionada ao relacionamento exam_question
-                exame.exam_question.append(questao)
+                nota = request.form.get('nota_' + str(questao_id))
+                if nota:
+                    nota = float(nota)
+                else:
+                    nota = 2
+
+                exame_question = tables.ExamQuestion(Exam_id=exame.id, Question_id=questao.id, nota=nota)
+                exame.exam_questions.append(exame_question)
 
         db.session.commit()
         return redirect(url_for('pag_professor'))
-
 
     questoes = tables.Question.query.filter_by(user_id=current_user.id).all()
     return render_template("add_quest_exam.html", exam_id=exam_id, questoes=questoes)
 
 
-@app.route("/exam/<exame_id>")
-def list_exam_questions(exame_id):
-    exame = tables.Exam.query.get(exame_id)
-    if exame is None:
+
+
+
+
+@app.route("/exam/<int:exam_id>")
+def list_exam_questions(exam_id):
+    exam = tables.Exam.query.get(exam_id)
+    if exam is None:
         return "Exame não encontrado!"
 
-    questoes = exame.exam_question
+    exam_questions = tables.ExamQuestion.query.filter_by(Exam_id=exam_id).all()
 
-    return render_template("list_exam_questions.html", questoes=questoes)
+    # Criar uma lista para armazenar as questões relacionadas ao exame
+    questoes = []
+    
+    for exam_question in exam_questions:
+        # Obter a questão associada ao ExamQuestion
+        questao = tables.Question.query.get(exam_question.Question_id)
+        
+        # Adicionar a questão à lista de questões
+        if questao is not None:
+            questoes.append(questao)
 
-from flask import redirect, url_for, flash, render_template, request
-from datetime import datetime
+    return render_template("list_exam_questions.html", exam=exam, questoes=questoes)
 
-@app.route("/submit_answers/<exame_id>", methods=["GET", "POST"])
+
+
+
+@app.route("/submit_answers/<int:exame_id>", methods=["GET", "POST"])
 def submit_answers(exame_id):
     exame = tables.Exam.query.get(exame_id)
-
-    
 
     if exame is None:
         flash("Exame não encontrado", "error")
         return redirect(url_for('procurar_exames'))
-    
-    user_id = current_user.id  # Substitua pelo ID do usuário atual
+
+    user_id = current_user.id
     exam_realizado = tables.FinalizedExam.query.filter_by(user_id=user_id, exam_id=exame.id).first()
     if exam_realizado is not None:
         flash(f"Você já realizou o exame {exame_id} anteriormente", "error")
@@ -205,7 +263,6 @@ def submit_answers(exame_id):
         flash(f"O exame {exame_id} ainda não abriu", "error")
         return redirect(url_for('procurar_exames'))
 
- 
     if request.method == "POST":
         respostas = {}
         for key, value in request.form.items():
@@ -215,18 +272,19 @@ def submit_answers(exame_id):
 
         Respostas_formatadas = ", ".join(f"{questao_id}_{resposta}" for questao_id, resposta in respostas.items())
         print(Respostas_formatadas)
-        Exame_finalizado = tables.FinalizedExam(current_user.id, exame_id, Respostas_formatadas)
+        Exame_finalizado = tables.FinalizedExam(user_id, exame_id, Respostas_formatadas)
         db.session.add(Exame_finalizado)
         db.session.commit()
 
-        # Exemplo de como definir uma mensagem de sucesso após a conclusão do exame
-        flash("Prova realizada com sucesso!", "success")
-
         return redirect(url_for('pag_aluno'))
 
-    questoes = exame.exam_question
-    return render_template("responder_prova.html", questoes=questoes, exame_id=exame_id)
 
+    questoes = db.session.query(tables.Question, tables.ExamQuestion.nota).filter(
+        tables.ExamQuestion.Exam_id == exame.id,
+        tables.ExamQuestion.Question_id == tables.Question.id
+    ).all()
+
+    return render_template("responder_prova.html", questoes=questoes, exame_id=exame_id)
 
 @app.route("/procurar_exames")  # Lista todos os exames do Usuário atual
 def procurar_exames():
@@ -259,10 +317,100 @@ def procurar_exames():
 @app.route("/exames_feitos", methods=["GET"])
 def exames_feitos():
     finalized_exams = tables.FinalizedExam.query.all()
+
+    for exame_feito in finalized_exams:
+        user_id = exame_feito.user_id
+        exam_id = exame_feito.exam_id
+        exame_feito.exam = tables.Exam.query.get(exam_id)
+        exame_feito.nota_total = calcular_nota_exame(exam_id, user_id)
+
     return render_template("exames_feitos.html", finalized_exams=finalized_exams)
 
-@app.route("/view_finalized_exams/<int:exam_id>")
+
+
+
+
+@app.route("/view_finalized_exam/<int:exam_id>/<int:user_id>")
+def view_finalized_exam(exam_id, user_id):
+    exam = tables.Exam.query.get(exam_id)
+    user = tables.User.query.get(user_id)
+
+    if exam is None or user is None:
+        flash("Exame ou usuário não encontrado", "error")
+        return redirect(url_for('procurar_exames'))
+    
+    nota_maxima = calcular_nota_maxima_exame(exam_id)
+    finalized_exam = tables.FinalizedExam.query.filter_by(user_id=user_id, exam_id=exam_id).first()
+    if finalized_exam is None:
+        flash(f"O usuário {user.username} não finalizou o exame {exam_id}", "error")
+        return redirect(url_for('procurar_exames'))
+
+    answers_replied = finalized_exam.answers_replied.split(", ")
+
+    questoes_com_resposta = []
+    nota_total = 0.0
+
+    for resposta in answers_replied:
+        questao_id, resposta_aluno = resposta.split('_')
+        questao = tables.Question.query.get(questao_id)
+        if questao is not None:
+            resposta_correta = ""
+            status_resposta = ""
+            nota = 0.0
+            soma_nota = 0.0
+            nota = questao.exam_questions.filter_by(Exam_id=exam_id).first().nota
+            if questao.question_type == 1:
+                resposta_correta = "Verdadeiro" if questao.answer_VouF else "Falso"
+                resposta_aluno_bool = True if resposta_aluno == "V" else False
+                if resposta_aluno_bool == questao.answer_VouF:
+                    status_resposta = "correta"
+                    soma_nota = nota
+                else:
+                    status_resposta = "incorreta - A resposta correta era " + resposta_correta
+                    soma_nota = 0.0
+
+            elif questao.question_type == 2:
+                resposta_correta = questao.answer_Mult
+                if resposta_aluno == questao.answer_Mult:
+                    status_resposta = "correta"
+                    soma_nota = nota
+                else:
+                    status_resposta = "incorreta"
+
+                    soma_nota = 0.0
+
+            elif questao.question_type == 3:
+                resposta_correta = str(questao.answer_ValNum)
+                if resposta_aluno == resposta_correta:
+                    status_resposta = "correta"
+                    soma_nota = nota
+                else:
+                    status_resposta = "incorreta"
+                    soma_nota = 0.0
+
+            questoes_com_resposta.append((questao, nota, resposta_aluno, resposta_correta, status_resposta))
+            nota_total += soma_nota
+
+    return render_template("view_finalized_exam.html", exam=exam, user=user, questoes=questoes_com_resposta, nota_total=nota_total, nota_maxima=nota_maxima)
+
+
+@app.route("/view_finalized_exam/<int:exam_id>")
 def view_finalized_exams(exam_id):
-    exam = tables.Exam.query.get_or_404(exam_id)
+    exam = tables.Exam.query.get(exam_id)
+
+    if exam is None:
+        flash("Exame não encontrado", "error")
+        return redirect(url_for('procurar_exames'))
+
     finalized_exams = tables.FinalizedExam.query.filter_by(exam_id=exam_id).all()
-    return render_template("view_finalized_exams.html", exam=exam, finalized_exams=finalized_exams)
+    users_info = []
+
+    for finalized_exam in finalized_exams:
+        user_id = finalized_exam.user_id
+        user = tables.User.query.get(user_id)
+        nota_total =  calcular_nota_exame(exam_id, user_id)
+
+        users_info.append((user_id, user.name, nota_total))
+    nota_maxima= calcular_nota_maxima_exame(exam_id)
+
+    return render_template("users_that_finalized_exams.html", exam=exam, nota_maxima = nota_maxima, users_info=users_info)

@@ -7,10 +7,17 @@ def get_user(user_id):
         return User.query.filter_by(id=user_id).first()
 
 
-exam_question = db.Table('exam_question',
-    db.Column('Exam_id', db.Integer, db.ForeignKey('exams.id'), primary_key=True),
-    db.Column('Question_id', db.Integer, db.ForeignKey('questions.id'), primary_key=True)
-)
+class ExamQuestion(db.Model):
+    __tablename__ = 'exam_question'
+    Exam_id = db.Column(db.Integer, db.ForeignKey('exams.id'), primary_key=True)
+    Question_id = db.Column(db.Integer, db.ForeignKey('questions.id'), primary_key=True)
+    nota = db.Column(db.Float)
+
+    def __init__(self, Exam_id, Question_id, nota):
+        self.Exam_id = Exam_id
+        self.Question_id = Question_id
+        self.nota = nota
+
 
 
 class User(db.Model, UserMixin):
@@ -45,6 +52,9 @@ class Question(db.Model):
 
         user = db.relationship('User', foreign_keys=user_id)
 
+        exam_questions = db.relationship('ExamQuestion', backref='question', lazy='dynamic')
+
+
 
         def __init__(self, statement, question_type,  user_id):
                 self.statement = statement
@@ -64,8 +74,7 @@ class Exam(db.Model):
 
        user = db.relationship('User', foreign_keys=user_id)
 
-       exam_question = db.relationship('Question', secondary = exam_question, lazy ='subquery',
-                                        backref = db.backref('inexam', lazy=True))
+       exam_questions = db.relationship('ExamQuestion', backref='exam', lazy='dynamic')
        
        def __init__(self, start_time, end_time, user_id, comment):
                 self.start_time = start_time

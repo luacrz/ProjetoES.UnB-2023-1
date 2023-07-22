@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Exames Finalizados - {{ exam.name }}</title>
+    <title>Listar Exames</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* Estilos gerais da página */
+        
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -12,13 +12,13 @@
             background-color: #f2f2f2;
         }
 
-        /* Estilos do cabeçalho */
+        
         .header {
             background-color: #7edd7b;
             padding: 10px;
         }
 
-        /* Estilos do menu */
+        
         .menu {
             list-style-type: none;
             margin: 0;
@@ -38,7 +38,7 @@
             padding: 5px;
         }
 
-
+        
         .container {
             max-width: 800px;
             margin: 0 auto;
@@ -48,7 +48,7 @@
             border-radius: 8px;
         }
 
-
+        
         .container li {
             margin-bottom: 20px;
             border-bottom: 1px solid #ccc;
@@ -96,6 +96,15 @@
             border-radius: 4px;
             cursor: pointer;
         }
+        .back-btn {
+            padding: 8px 20px;
+            background-color: #000000;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
@@ -111,28 +120,20 @@
         </ul>
     </div>
     
-    <div class="header">
-
-    </div>
-    
     <div class="container">
-        <h1>Exames Finalizados - {{ exam.name }}</h1>
-        <table>
-            <thead>
-                <tr>
-                    <th>Aluno</th>
-                    <th>Respostas</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for finalized_exam in finalized_exams %}
-                <tr>
-                    <td>{{ finalized_exam.user_id }}</td>
-                    <td>{{ finalized_exam.answers_replied }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <h1 style="text-align: center;">Notas dos alunos do Exame {{ exam.id }}</h1>
+        <h3 style="text-align: center;">Nota Máxima: {{ nota_maxima }}</h3>
+        <div class="users-wrapper">
+            {% for user_id, name, nota_total in users_info %}
+                <div class="user-card">
+                    <h3>Aluno: {{ name }}</h3>
+                    <p>Usuário ID: {{ user_id }}</p>
+                    <p>Nota Total: {{ nota_total }}</p>
+                    <a href="{{ url_for('view_finalized_exam', exam_id=exam.id,  user_id=user_id) }}" class="view-user-link">Ver Detalhes</a>
+                </div>
+            {% endfor %}
+        </div>
     </div>
+
 </body>
 </html>

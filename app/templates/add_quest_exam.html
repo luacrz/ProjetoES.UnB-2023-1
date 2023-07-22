@@ -4,7 +4,7 @@
     <title>Adicionar questão no Exame</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        
+        /* Estilos gerais da página */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -12,13 +12,13 @@
             background-color: #f2f2f2;
         }
 
-        
+        /* Estilos do cabeçalho */
         .header {
             background-color: #7edd7b;
             padding: 10px;
         }
 
-        
+        /* Estilos do menu */
         .menu {
             list-style-type: none;
             margin: 0;
@@ -38,7 +38,7 @@
             padding: 5px;
         }
 
-        
+        /* Estilos do container principal */
         .container {
             width: 100%;
             max-width: 800px;
@@ -66,9 +66,7 @@
             margin-bottom: 20px;
         }
 
-        .selection-container select,
         .selection-container input[type="checkbox"] {
-            width: 100%;
             margin-bottom: 10px;
         }
 
@@ -79,11 +77,6 @@
 
         li {
             margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-top: 10px;
         }
 
         .submit-button {
@@ -99,7 +92,6 @@
             cursor: pointer;
         }
 
-        
         @media screen and (max-width: 768px) {
             .selection-container > div {
                 width: 100%;
@@ -126,6 +118,7 @@
         <form action="{{ url_for('add_quest_exam', exam_id=exam_id) }}" method="post">
             <div class="selection-container">
                 <div>
+                    <p>Se campo de nota não é preenchido, nota = 2</p>
                     <h2>Questões:</h2>
                     <ul>
                         {% for questao in questoes %}
@@ -143,7 +136,14 @@
                                 <p>Resposta: {{ questao.answer_ValNum }}</p>
                             {% endif %}
                             
-                            <input type="checkbox" name="questao_ids_{{ questao.id }}" value="{{ questao.id }}">
+                            <input type="checkbox" id="questao_{{ questao.id }}" name="questao_ids_{{ questao.id }}" value="{{ questao.id }}" onchange="showHideNotaInput('{{ questao.id }}')">
+                            <label for="questao_{{ questao.id }}"></label>
+
+                            <!-- Campo de nota -->
+                            <div id="nota_{{ questao.id }}" style="display: none;">
+                                <label for="nota_{{ questao.id }}">Nota:</label>
+                                <input type="number" name="nota_{{ questao.id }}" placeholder="Nota" min="0" max="10" step="0.1">
+                            </div>
                         </li>
                         {% endfor %}
                     </ul>
@@ -151,9 +151,30 @@
             </div>
             
             <div class="submit-button">
-                <button type="submit">Adicionar Questões</button>
+                <button type="submit" id="addButton" disabled>Adicionar Questões</button>
             </div>
         </form>
     </div>
+
+    <script>
+        function showHideNotaInput(questaoId) {
+            var checkbox = document.getElementById('questao_' + questaoId);
+            var input = document.getElementById('nota_' + questaoId);
+            input.style.display = checkbox.checked ? "block" : "none";
+
+            // Verificar se há pelo menos uma checkbox selecionada
+            var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            var addButton = document.getElementById('addButton');
+            var atLeastOneSelected = false;
+
+            checkboxes.forEach(function (checkbox) {
+                if (checkbox.checked) {
+                    atLeastOneSelected = true;
+                }
+            });
+
+            addButton.disabled = !atLeastOneSelected;
+        }
+    </script>
 </body>
 </html>

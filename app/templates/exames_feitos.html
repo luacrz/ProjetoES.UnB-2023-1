@@ -93,18 +93,21 @@
         <table>
             <tr>
                 <th>ID do Exame</th>
-                <th>Respostas do Aluno</th>
-                <th>Nota</th>
+                <th>Comentário do Exame</th>
+                <th>Nota Total do Aluno</th>
+                <th class="ver-detalhes">Ver Detalhes</th>
             </tr>
             {% for exame_feito in finalized_exams %}
             <tr>
                 <td>{{ exame_feito.exam_id }}</td>
-                <td>{{ exame_feito.answers_replied }}</td>
-                <td> -- </td>
+                <td>{{ exame_feito.exam.comment }}</td>
+                <td>{{ exame_feito.nota_total }}</td>
+                <td class="ver-detalhes">
+                    <a href="{{ url_for('view_finalized_exam', exam_id=exame_feito.exam_id, user_id=exame_feito.user_id) }}" class="view-user-link">Ver Detalhes</a>
+                </td>
             </tr>
             {% endfor %}
         </table>
-        <a href="{{ url_for('procurar_exames')}}">Procurar Exames</a>
     </div>
 </body>
 </html>
