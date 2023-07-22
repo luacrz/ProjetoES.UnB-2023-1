@@ -366,7 +366,7 @@ def view_finalized_exam(exam_id, user_id):
                     status_resposta = "correta"
                     soma_nota = nota
                 else:
-                    status_resposta = "incorreta - A resposta correta era " + resposta_correta
+                    status_resposta = "incorreta"
                     soma_nota = 0.0
 
             elif questao.question_type == 2:

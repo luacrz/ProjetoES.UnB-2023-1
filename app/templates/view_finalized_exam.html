@@ -112,16 +112,16 @@
         </ul>
     </div>
     {% elif current_user.role == 0 %}
-    <div class="header">
-        <ul class="menu">
-            <li><a href="{{ url_for('pag_aluno') }}"><i class="fas fa-home"></i></a></li>
-            <li><a href="{{ url_for('procurar_exames')}}"><i class="fas fa-search"></i></a></li>
-            <li><a href="{{ url_for('exames_feitos')}}"><i class="fas fa-check-circle"></i></a></li>
-            <li><a href="{{ url_for('logout')}}"><i class="fas fa-sign-out-alt"></i></a></li>   
-        </ul>
-    </div>
+        <div class="header">
+            <ul class="menu">
+                <li><a href="{{ url_for('pag_aluno') }}"><i class="fas fa-home"></i></a></li>
+                <li><a href="{{ url_for('procurar_exames')}}"><i class="fas fa-search"></i></a></li>
+                <li><a href="{{ url_for('exames_feitos')}}"><i class="fas fa-check-circle"></i></a></li>
+                <li><a href="{{ url_for('logout')}}"><i class="fas fa-sign-out-alt"></i></a></li>   
+            </ul>
+        </div>
     {% endif %}
-    
+        
     <div class="header">
 
     </div>
