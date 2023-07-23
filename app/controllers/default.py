@@ -513,9 +513,13 @@ def delete_exam(exam_id):
 
     if request.method == 'POST':
         # Excluir todas as ExamQuestion associadas ao exame
-        exam_questions = tables.ExamQuestion.query.filter_by(exam_id=exam_id).all()
+        exam_questions = tables.ExamQuestion.query.filter_by(Exam_id=exam_id).all()
+        finalized_exam = tables.FinalizedExam.query.filter_by(exam_id=exam_id).all()
         for exam_question in exam_questions:
             db.session.delete(exam_question)
+        for finalized_exam in finalized_exam:
+            db.session.delete(finalized_exam)
+
 
         # Excluir o exame após remover todas as ExamQuestion associadas
         db.session.delete(exam)
