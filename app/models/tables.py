@@ -47,8 +47,13 @@ class Question(db.Model):
         user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
         question_type = db.Column(db.Integer)
         answer_VouF = db.Column(db.Boolean)
-        answer_Mult = db.Column(db.Integer)
-        answer_ValNum = db.Column(db.Integer)
+        answer_Mult = db.Column(db.String)
+        answer_ValNum = db.Column(db.Float)
+        answer_Mult_A = db.Column(db.Text)
+        answer_Mult_B = db.Column(db.Text)
+        answer_Mult_C = db.Column(db.Text)
+        answer_Mult_D = db.Column(db.Text)
+
 
         user = db.relationship('User', foreign_keys=user_id)
 

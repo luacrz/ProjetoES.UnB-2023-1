@@ -106,24 +106,24 @@
         <h1>Criar Questão</h1>
         <form action="{{ url_for('create_question')}}" method="post">
             <label for="comment">Enunciado:</label>
-            <textarea id="comment" name="statement"></textarea>
+            <textarea id="comment" name="statement" required></textarea>
             
             <label for="tipo">Tipo:</label>
             <select id="tipo" name="tipo" required>
                 <option value="">Selecione</option>
-                <option value="VF">Verdadeiro/Falso</option>
-                <option value="ABC">A/B/C/D</option>
-                <option value="NUM">Numérico</option>
+                <option value="VF">Verdadeiro ou Falso</option>
+                <option value="ABC">Múltipla Escolha</option>
+                <option value="NUM">Valor Numérico</option>
             </select>
             
             <div class="option-fields" id="vf-fields">
                 <label for="vf-resposta">Resposta (V/F):</label>
-                <select id="vf-resposta" name="vf-resposta">
+                <select id="vf-resposta" name="vf-resposta" required>
                     <option value="">Selecione</option>
                     <option value="True">Verdadeiro</option>
                     <option value="False">Falso</option>
                 </select>
-            </div>
+            </div>            
             
             <div class="option-fields" id="abc-fields">
                 <label for="abc-resposta">Resposta (A/B/C/D):</label>
@@ -134,11 +134,24 @@
                     <option value="C">C</option>
                     <option value="D">D</option>
                 </select>
+
+                <label for="resposta-A">Alternativa A:</label>
+                <textarea type="text" id="resposta-A" name="resposta-A" {% if tipo == 'ABC' %}required{% endif %}></textarea>
+
+                <label for="resposta-B">Alternativa B:</label>
+                <textarea type="text" id="resposta-B" name="resposta-B" {% if tipo == 'ABC' %}required{% endif %}></textarea>
+
+                <label for="resposta-C">Alternativa C:</label>
+                <textarea type="text" id="resposta-C" name="resposta-C" {% if tipo == 'ABC' %}required{% endif %}></textarea>
+
+                <label for="resposta-D">Alternativa D:</label>
+                <textarea type="text" id="resposta-D" name="resposta-D" {% if tipo == 'ABC' %}required{% endif %}></textarea>
+
             </div>
             
             <div class="option-fields" id="num-fields">
                 <label for="num-resposta">Resposta (Numérico):</label>
-                <input type="number" id="num-resposta" name="num-resposta">
+                <input type="number" id="num-resposta" name="num-resposta" step="0.1">
             </div>
             
             <input type="submit" value="Criar Questão">
@@ -150,17 +163,47 @@
             const vfFields = document.getElementById('vf-fields');
             const abcFields = document.getElementById('abc-fields');
             const numFields = document.getElementById('num-fields');
-
+            const numResposta = document.getElementById('num-resposta');
+            const abcResposta = document.getElementById('abc-resposta');
+            const vfResposta = document.getElementById('vf-resposta');
+    
             function showFields() {
                 vfFields.style.display = tipoSelect.value === 'VF' ? 'block' : 'none';
                 abcFields.style.display = tipoSelect.value === 'ABC' ? 'block' : 'none';
                 numFields.style.display = tipoSelect.value === 'NUM' ? 'block' : 'none';
+    
+                // Habilita/Desabilita os campos de alternativas com base no tipo selecionado
+                const tipoABC = tipoSelect.value === 'ABC';
+                document.getElementById("resposta-A").required = tipoABC;
+                document.getElementById("resposta-B").required = tipoABC;
+                document.getElementById("resposta-C").required = tipoABC;
+                document.getElementById("resposta-D").required = tipoABC;
+    
+                // Limpa os campos de alternativas ao mudar o tipo de questão
+                if (!tipoABC) {
+                    document.getElementById("resposta-A").value = '';
+                    document.getElementById("resposta-B").value = '';
+                    document.getElementById("resposta-C").value = '';
+                    document.getElementById("resposta-D").value = '';
+                }
+    
+                // Define se o campo num-resposta é obrigatório com base no tipo selecionado
+                numResposta.required = tipoSelect.value === 'NUM';
+    
+                // Define se o campo abc-resposta é obrigatório com base no tipo selecionado
+                abcResposta.required = tipoSelect.value === 'ABC';
+    
+                // Define se o campo vf-resposta é obrigatório com base no tipo selecionado
+                vfResposta.required = tipoSelect.value === 'VF';
             }
-
+    
             tipoSelect.addEventListener('change', showFields);
-            showFields(); 
+            showFields();
         });
     </script>
+    
+    
+    
 
 </body>
 </html>

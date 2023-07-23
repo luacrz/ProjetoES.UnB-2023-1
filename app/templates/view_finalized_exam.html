@@ -96,6 +96,45 @@
             border-radius: 4px;
             cursor: pointer;
         }
+
+        /* Estilos específicos para as respostas */
+        .alternativas-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .alternativa {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .radio-label {
+            margin-right: 10px;
+        }
+
+        .radio-circle {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            border: 1px solid #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 5px;
+        }
+
+        .radio-selected {
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+        }
+
+        .radio-incorrect {
+            background-color: #e74c3c;
+            color: #fff;
+            border: none;
+        }
     </style>
 </head>
 <body>
@@ -131,31 +170,94 @@
         <h3 style="text-align: center;">Nota Máxima: {{ nota_maxima }}</h3>
         <h2>Aluno: {{ user.name }}</h2>
         <p>Nota Total: {{ nota_total }}</p>
+        {% if questoes %}
         <ul>
             {% for questao, nota, resposta_aluno, resposta_correta, status_resposta in questoes %}
             <li>
                 <h3>Questão {{ loop.index }} - Nota: {{ nota }}</h3>
                 <p>Enunciado: {{ questao.statement }}</p>
-                {% if questao.question_type == 1 %}
-                    <div class="alternativas-container">
-                    </div>
-                {% elif questao.question_type == 2 %}
-                    <div class="alternativas-container">
-                    </div>
-                {% elif questao.question_type == 3 %}
-                    <label for="resposta_{{ questao.id }}">Resposta:</label>
-                    <input type="number" name="respostas[{{ questao.id }}]" step="1" id="resposta_{{ questao.id }}" value="{{ resposta_aluno }}" disabled>
-                {% endif %}
-                <input type="hidden" name="questao_ids[]" value="{{ questao.id }}">
-                <p>Resposta do Aluno: {% if resposta_aluno %}{{ resposta_aluno }}{% else %}Não Respondida{% endif %}</p>
-                <p>Resposta Correta: {{ resposta_correta }}</p>
-                <p>Status da Resposta: {% if status_resposta == 'correta' %}Correta{% elif status_resposta == 'incorreta' %}Incorreta{% else %}Não Respondida{% endif %}</p>
+                <div class="alternativas-container">
+                    {% if questao.question_type == 1 %}
+                        <p>Opção escolhida:</p>
+                        {% if resposta_aluno %}
+                            <div class="alternativa">
+                                <div class="radio-circle {% if resposta_aluno == 'V' %}{% if status_resposta == 'incorreta' %}radio-incorrect{% else %}radio-selected{% endif %}{% endif %}"></div>
+                                <span>Verdadeiro</span>
+                            </div>
+                            <div class="alternativa">
+                                <div class="radio-circle {% if resposta_aluno == 'F' %}{% if status_resposta == 'incorreta' %}radio-incorrect{% endif %}{% endif %}"></div>
+                                <span>Falso</span>
+                            </div>
+                        {% else %}
+                            <p>Questão não respondida</p>
+                            <div class="alternativa">
+                                <div class="radio-circle"></div>
+                                <span>Verdadeiro</span>
+                            </div>
+                            <div class="alternativa">
+                                <div class="radio-circle"></div>
+                                <span>Falso</span>
+                            </div>
+                        {% endif %}
+                    {% elif questao.question_type == 2 %}
+                        <p>Opção escolhida:</p>
+                        {% if resposta_aluno %}
+                            <div class="alternativa">
+                                <div class="radio-circle {% if resposta_aluno == 'A' %}{% if status_resposta == 'incorreta' %}radio-incorrect{% else %}radio-selected{% endif %}{% endif %}"></div>
+                                <span>{{ questao.answer_Mult_A }}</span>
+                            </div>
+                            <div class="alternativa">
+                                <div class="radio-circle {% if resposta_aluno == 'B' %}{% if status_resposta == 'incorreta' %}radio-incorrect{% else %}radio-selected{% endif %}{% endif %}"></div>
+                                <span>{{ questao.answer_Mult_B }}</span>
+                            </div>
+                            <div class="alternativa">
+                                <div class="radio-circle {% if resposta_aluno == 'C' %}{% if status_resposta == 'incorreta' %}radio-incorrect{% else %}radio-selected{% endif %}{% endif %}"></div>
+                                <span>{{ questao.answer_Mult_C }}</span>
+                            </div>
+                            <div class="alternativa">
+                                <div class="radio-circle {% if resposta_aluno == 'D' %}{% if status_resposta == 'incorreta' %}radio-incorrect{% else %}radio-selected{% endif %}{% endif %}"></div>
+                                <span>{{ questao.answer_Mult_D }}</span>
+                            </div>
+                        {% else %}
+                            <p>Questão não respondida</p>
+                            <div class="alternativa">
+                                <div class="radio-circle"></div>
+                                <span>{{ questao.answer_Mult_A }}</span>
+                            </div>
+                            <div class="alternativa">
+                                <div class="radio-circle"></div>
+                                <span>{{ questao.answer_Mult_B }}</span>
+                            </div>
+                            <div class="alternativa">
+                                <div class="radio-circle"></div>
+                                <span>{{ questao.answer_Mult_C }}</span>
+                            </div>
+                            <div class="alternativa">
+                                <div class="radio-circle"></div>
+                                <span>{{ questao.answer_Mult_D }}</span>
+                            </div>
+                        {% endif %}
+                    {% elif questao.question_type == 3 %}
+                        <label for="resposta_{{ questao.id }}">Resposta do Aluno:</label>
+                        {% if resposta_aluno %}
+                            <input type="number" name="respostas[{{ questao.id }}]" step="1" id="resposta_{{ questao.id }}" value="{{ resposta_aluno }}" disabled>
+                        {% else %}
+                            <p>Questão não respondida</p>
+                            <input type="number" name="respostas[{{ questao.id }}]" step="1" id="resposta_{{ questao.id }}" disabled>
+                        {% endif %}
+                    {% endif %}
+                </div>
                 {% if status_resposta == 'incorreta' %}
-                    <p>A resposta correta era {% if questao.question_type == 1 %}{{ questao.answer_VouF }}{% elif questao.question_type == 2 %}{{ questao.answer_Mult }}{% elif questao.question_type == 3 %}{{ questao.answer_ValNum }}{% endif %}</p>
+                    <p class="radio-incorrect">A resposta correta é '{{ resposta_correta }}'.</p>
+                {% else %}
+                    <p>A resposta correta é '{{ resposta_correta }}'.</p>
                 {% endif %}
             </li>
             {% endfor %}
         </ul>
+        {% else %}
+        <p>Não há questões neste exame.</p>
+        {% endif %}
     </div>
 </body>
 </html>

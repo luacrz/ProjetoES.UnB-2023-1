@@ -131,6 +131,11 @@
                             {% elif questao.question_type == 2 %}
                                 <p>Tipo: Múltipla escolha</p>
                                 <p>Resposta: {{ questao.answer_Mult }}</p>
+                                <!-- Mostra as alternativas quando o tipo é A/B/C/D -->
+                                <p>Alternativa A: {{ questao.answer_Mult_A }}</p>
+                                <p>Alternativa B: {{ questao.answer_Mult_B }}</p>
+                                <p>Alternativa C: {{ questao.answer_Mult_C }}</p>
+                                <p>Alternativa D: {{ questao.answer_Mult_D }}</p>
                             {% elif questao.question_type == 3 %}
                                 <p>Tipo: Numérico</p>
                                 <p>Resposta: {{ questao.answer_ValNum }}</p>

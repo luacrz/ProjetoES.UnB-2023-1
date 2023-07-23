@@ -52,14 +52,21 @@
             flex-direction: column;
         }
 
+        .alternativas-list {
+            /* Remover a estilização padrão das listas */
+            list-style-type: none;
+            padding: 0;
+        }
+
         .alternativa {
             display: flex;
-            align-items: center;
+            align-items: flex-start; /* Alinha os itens à esquerda */
             flex-direction: row;
+            margin-bottom: 10px; /* Espaçamento entre as alternativas */
         }
 
         .radio-label {
-            margin-right: 5px;
+            margin-left: 10px; /* Espaçamento à esquerda das labels */
         }
 
         .option-fields {
@@ -85,7 +92,7 @@
     <div class="container">
         <h1>Listar Questões</h1>
         <form action="{{ url_for('submit_answers', exame_id=exame_id) }}" method="post">
-            <ul>
+            <ul class="alternativas-list">
                 {% for questao, nota in questoes %}
                 <li>
                     <h3>Questão {{ loop.index }} - Nota: {{ nota }}</h3>
@@ -101,28 +108,28 @@
                                 <input type="radio" name="respostas[{{ questao.id }}]" value="F" id="F">
                             </div>
                         </div>
-                    {% elif questao.question_type == 2 %}
+                        {% elif questao.question_type == 2 %}
                         <div class="alternativas-container">
                             <div class="alternativa">
-                                <label class="radio-label" for="A">a.</label>
+                                <label class="radio-label" for="A">{{ questao.answer_Mult_A }}</label>
                                 <input type="radio" name="respostas[{{ questao.id }}]" value="A" id="A">
                             </div>
                             <div class="alternativa">
-                                <label class="radio-label" for="B">b.</label>
+                                <label class="radio-label" for="B">{{ questao.answer_Mult_B }}</label>
                                 <input type="radio" name="respostas[{{ questao.id }}]" value="B" id="B">
                             </div>
                             <div class="alternativa">
-                                <label class="radio-label" for="C">c.</label>
+                                <label class="radio-label" for="C">{{ questao.answer_Mult_C }}</label>
                                 <input type="radio" name="respostas[{{ questao.id }}]" value="C" id="C">
                             </div>
                             <div class="alternativa">
-                                <label class="radio-label" for="D">d.</label>
+                                <label class="radio-label" for="D">{{ questao.answer_Mult_D }}</label>
                                 <input type="radio" name="respostas[{{ questao.id }}]" value="D" id="D">
                             </div>
                         </div>
                     {% elif questao.question_type == 3 %}
                         <label for="resposta_{{ questao.id }}">Resposta:</label>
-                        <input type="number" name="respostas[{{ questao.id }}]" step="1" id="resposta_{{ questao.id }}">
+                        <input type="number" name="respostas[{{ questao.id }}]" step="0.1" id="resposta_{{ questao.id }}">
                     {% endif %}
                     <input type="hidden" name="questao_ids[]" value="{{ questao.id }}">
                 </li>
@@ -133,4 +140,3 @@
     </div>
 </body>
 </html>
-

@@ -111,42 +111,60 @@ def create_exam():
     return render_template("create_exam.html")
 
 
-@app.route("/create_question", methods=['GET', 'POST']) #Página de Criar Questões
+@app.route("/create_question", methods=['GET', 'POST'])
 def create_question():
+    tipo = None
     if request.method == 'POST':
         statement = request.form['statement']
         tipo = request.form['tipo']
-        
+        if tipo == 'ABC' and not request.form.get('abc-resposta'):
+            return render_template("create_question.html", tipo=tipo, error="Campo de resposta A/B/C/D é obrigatório para Múltipla Escolha.")
         if tipo == "VF":
             answer_value = request.form.get('vf-resposta')
             tipo = 1
-            if answer_value == "True": answer = 1
-            else : answer = 0
+            if answer_value == "True":
+                answer = 1
+            else:
+                answer = 0
         elif tipo == "ABC":
             answer_value = request.form.get('abc-resposta')
             tipo = 2
+            resposta_A = request.form.get('resposta-A')
+            resposta_B = request.form.get('resposta-B')
+            resposta_C = request.form.get('resposta-C')
+            resposta_D = request.form.get('resposta-D')
         elif tipo == "NUM":
             answer_value = request.form.get('num-resposta')
+            if answer_value == "":
+                answer_value = None
+            else:
+                answer_value = float(answer_value)  # Convertendo para float
             tipo = 3
         else:
             answer_value = None
             tipo = 0
-        
-        
+
         question = tables.Question(statement, tipo, user_id=current_user.id)
         if tipo == 1:
             question.answer_VouF = answer
         elif tipo == 2:
             question.answer_Mult = answer_value
+            question.answer_Mult_A = resposta_A
+            question.answer_Mult_B = resposta_B
+            question.answer_Mult_C = resposta_C
+            question.answer_Mult_D = resposta_D
         elif tipo == 3:
             question.answer_ValNum = answer_value
 
         db.session.add(question)
         db.session.commit()
-        
+
         return redirect(url_for('pag_professor'))
-    
-    return render_template("create_question.html")
+
+    return render_template("create_question.html", tipo=tipo)
+
+
+
 
 
 
@@ -162,10 +180,11 @@ def pag_professor():
 def visualizar_notas():
     return render_template("visualizar_notas.html")
 
-@app.route("/listar_questoes") #Lista todas as questões do Usuário atual
+@app.route("/listar_questoes") # Lista todas as questões do Usuário atual
 def listar_questoes():
-    questoes = tables.Question.query.filter_by(user_id =current_user.id)
+    questoes = tables.Question.query.filter_by(user_id=current_user.id)
     return render_template("listar_questoes.html", questoes=questoes)
+
 
 @app.route("/listar_exames") #Lista todos os exames do Usuário atual
 def listar_exames():
@@ -236,6 +255,7 @@ def list_exam_questions(exam_id):
             questoes.append(questao)
 
     return render_template("list_exam_questions.html", exam=exam, questoes=questoes)
+
 
 
 
@@ -338,60 +358,66 @@ def view_finalized_exam(exam_id, user_id):
     if exam is None or user is None:
         flash("Exame ou usuário não encontrado", "error")
         return redirect(url_for('procurar_exames'))
-    
+
     nota_maxima = calcular_nota_maxima_exame(exam_id)
     finalized_exam = tables.FinalizedExam.query.filter_by(user_id=user_id, exam_id=exam_id).first()
     if finalized_exam is None:
         flash(f"O usuário {user.username} não finalizou o exame {exam_id}", "error")
         return redirect(url_for('procurar_exames'))
 
-    answers_replied = finalized_exam.answers_replied.split(", ")
+    # Consulta todas as questões do exame
+    exam_questions = tables.ExamQuestion.query.filter_by(Exam_id=exam_id).all()
+
+    # Criar um dicionário para mapear o ID da questão para a resposta do aluno
+    answers_by_question_id = {int(answer.split('_')[0]): answer.split('_')[1] for answer in finalized_exam.answers_replied.split(", ")}
 
     questoes_com_resposta = []
     nota_total = 0.0
 
-    for resposta in answers_replied:
-        questao_id, resposta_aluno = resposta.split('_')
-        questao = tables.Question.query.get(questao_id)
-        if questao is not None:
-            resposta_correta = ""
-            status_resposta = ""
-            nota = 0.0
-            soma_nota = 0.0
-            nota = questao.exam_questions.filter_by(Exam_id=exam_id).first().nota
-            if questao.question_type == 1:
-                resposta_correta = "Verdadeiro" if questao.answer_VouF else "Falso"
-                resposta_aluno_bool = True if resposta_aluno == "V" else False
-                if resposta_aluno_bool == questao.answer_VouF:
-                    status_resposta = "correta"
-                    soma_nota = nota
-                else:
-                    status_resposta = "incorreta"
-                    soma_nota = 0.0
+    for exam_question in exam_questions:
+        questao = exam_question.question
+        questao_id = questao.id
+        resposta_aluno = answers_by_question_id.get(questao_id, None)  # Obtém a resposta do aluno para essa questão (se existir)
 
-            elif questao.question_type == 2:
-                resposta_correta = questao.answer_Mult
-                if resposta_aluno == questao.answer_Mult:
-                    status_resposta = "correta"
-                    soma_nota = nota
-                else:
-                    status_resposta = "incorreta"
+        nota = exam_question.nota
+        resposta_correta = ""
+        status_resposta = ""
+        soma_nota = 0.0
 
-                    soma_nota = 0.0
+        if questao.question_type == 1:
+            resposta_correta = "Verdadeiro" if questao.answer_VouF else "Falso"
+            resposta_aluno_bool = True if resposta_aluno == "V" else False
+            if resposta_aluno_bool == questao.answer_VouF:
+                status_resposta = "correta"
+                soma_nota = nota
+            else:
+                status_resposta = "incorreta"
+                soma_nota = 0.0
 
-            elif questao.question_type == 3:
-                resposta_correta = str(questao.answer_ValNum)
-                if resposta_aluno == resposta_correta:
-                    status_resposta = "correta"
-                    soma_nota = nota
-                else:
-                    status_resposta = "incorreta"
-                    soma_nota = 0.0
+        elif questao.question_type == 2:
+            resposta_correta = questao.answer_Mult
+            if resposta_aluno == questao.answer_Mult:
+                status_resposta = "correta"
+                soma_nota = nota
+            else:
+                status_resposta = "incorreta"
+                soma_nota = 0.0
 
-            questoes_com_resposta.append((questao, nota, resposta_aluno, resposta_correta, status_resposta))
-            nota_total += soma_nota
+        elif questao.question_type == 3:
+            resposta_correta = str(questao.answer_ValNum)
+            if resposta_aluno == resposta_correta:
+                status_resposta = "correta"
+                soma_nota = nota
+            else:
+                status_resposta = "incorreta"
+                soma_nota = 0.0
+
+        questoes_com_resposta.append((questao, nota, resposta_aluno, resposta_correta, status_resposta))
+        nota_total += soma_nota
 
     return render_template("view_finalized_exam.html", exam=exam, user=user, questoes=questoes_com_resposta, nota_total=nota_total, nota_maxima=nota_maxima)
+
+
 
 
 @app.route("/view_finalized_exam/<int:exam_id>")
