@@ -259,7 +259,6 @@ def list_exam_questions(exam_id):
 
 
 
-
 @app.route("/submit_answers/<int:exame_id>", methods=["GET", "POST"])
 def submit_answers(exame_id):
     exame = tables.Exam.query.get(exame_id)
@@ -274,12 +273,56 @@ def submit_answers(exame_id):
         flash(f"Você já realizou o exame {exame_id} anteriormente", "error")
         return redirect(url_for('procurar_exames'))
 
+    if request.method == "POST":
+        respostas = {}
+        for key, value in request.form.items():
+            if key.startswith('respostas['):
+                questao_id = key.split('[')[1].split(']')[0]
+                respostas[questao_id] = value
+
+        Respostas_formatadas = ", ".join(f"{questao_id}_{resposta}" for questao_id, resposta in respostas.items())
+        Exame_finalizado = tables.FinalizedExam(user_id, exame_id, Respostas_formatadas)
+        db.session.add(Exame_finalizado)
+        db.session.commit()
+
+        flash(f"Exame enviado", "error")
+        return redirect(url_for('procurar_exames'))
+
+
     current_time = datetime.now()
-    if exame.end_time < current_time:
+    if current_time > exame.end_time:
         flash(f"O exame {exame_id} já expirou", "error")
         return redirect(url_for('procurar_exames'))
 
-    if exame.start_time > current_time:
+    if current_time < exame.start_time:
+        flash(f"O exame {exame_id} ainda não abriu", "error")
+        return redirect(url_for('procurar_exames'))
+
+    questoes = db.session.query(tables.Question, tables.ExamQuestion.nota).filter(
+        tables.ExamQuestion.Exam_id == exame.id,
+        tables.ExamQuestion.Question_id == tables.Question.id
+    ).all()
+
+    return render_template("responder_prova.html", questoes=questoes, exame=exame)
+
+    exame = tables.Exam.query.get(exame_id)
+
+    if exame is None:
+        flash("Exame não encontrado", "error")
+        return redirect(url_for('procurar_exames'))
+
+    user_id = current_user.id
+    exam_realizado = tables.FinalizedExam.query.filter_by(user_id=user_id, exam_id=exame.id).first()
+    if exam_realizado is not None:
+        flash(f"Você já realizou o exame {exame_id} anteriormente", "error")
+        return redirect(url_for('procurar_exames'))
+
+    current_time = datetime.now()
+    # if current_time > exame.end_time:
+    #     flash(f"O exame {exame_id} já expirou", "error")
+    #     return redirect(url_for('procurar_exames'))
+
+    if current_time < exame.start_time:
         flash(f"O exame {exame_id} ainda não abriu", "error")
         return redirect(url_for('procurar_exames'))
 
@@ -291,20 +334,19 @@ def submit_answers(exame_id):
                 respostas[questao_id] = value
 
         Respostas_formatadas = ", ".join(f"{questao_id}_{resposta}" for questao_id, resposta in respostas.items())
-        print(Respostas_formatadas)
         Exame_finalizado = tables.FinalizedExam(user_id, exame_id, Respostas_formatadas)
         db.session.add(Exame_finalizado)
         db.session.commit()
 
         return redirect(url_for('pag_aluno'))
 
-
     questoes = db.session.query(tables.Question, tables.ExamQuestion.nota).filter(
         tables.ExamQuestion.Exam_id == exame.id,
         tables.ExamQuestion.Question_id == tables.Question.id
     ).all()
 
-    return render_template("responder_prova.html", questoes=questoes, exame_id=exame_id)
+    return render_template("responder_prova.html", questoes=questoes, exame=exame)
+
 
 @app.route("/procurar_exames")  # Lista todos os exames do Usuário atual
 def procurar_exames():
@@ -440,3 +482,22 @@ def view_finalized_exams(exam_id):
     nota_maxima= calcular_nota_maxima_exame(exam_id)
 
     return render_template("users_that_finalized_exams.html", exam=exam, nota_maxima = nota_maxima, users_info=users_info)
+
+def concluir_exame(exame_id, questoes, user_id):
+    # Formate as respostas em um dicionário, incluindo as questões não respondidas.
+    respostas = {}
+    for questao, _ in questoes:
+        questao_id = str(questao.id)
+        resposta = request.form.get(f"respostas[{questao_id}]")
+        respostas[questao_id] = resposta if resposta else "Não Respondida"
+
+    # Converta as respostas em uma string para armazenar no banco de dados.
+    Respostas_formatadas = ", ".join(f"{questao_id}_{resposta}" for questao_id, resposta in respostas.items())
+
+    # Crie um novo registro na tabela FinalizedExam para armazenar as respostas do aluno.
+    Exame_finalizado = tables.FinalizedExam(user_id, exame_id, Respostas_formatadas)
+    db.session.add(Exame_finalizado)
+    db.session.commit()
+
+    flash("Exame concluído automaticamente.", "info")
+    return redirect(url_for('pag_aluno'))

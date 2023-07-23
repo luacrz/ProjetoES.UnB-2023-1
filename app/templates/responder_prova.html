@@ -4,6 +4,7 @@
     <title>Responder Prova</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
+        /* Estilos gerais da página */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -91,7 +92,7 @@
 <body>
     <div class="container">
         <h1>Listar Questões</h1>
-        <form action="{{ url_for('submit_answers', exame_id=exame_id) }}" method="post">
+        <form id="myForm" action="{{ url_for('submit_answers', exame_id=exame.id) }}" method="post">
             <ul class="alternativas-list">
                 {% for questao, nota in questoes %}
                 <li>
@@ -108,7 +109,7 @@
                                 <input type="radio" name="respostas[{{ questao.id }}]" value="F" id="F">
                             </div>
                         </div>
-                        {% elif questao.question_type == 2 %}
+                    {% elif questao.question_type == 2 %}
                         <div class="alternativas-container">
                             <div class="alternativa">
                                 <label class="radio-label" for="A">{{ questao.answer_Mult_A }}</label>
@@ -135,8 +136,34 @@
                 </li>
                 {% endfor %}
             </ul>
-            <input type="submit" value="Enviar Respostas">
+            <button onclick="submitForm()">Enviar Respostas</button>
         </form>
     </div>
+
+    {% if exame %}
+    <script>
+
+        function submitForm() {
+            // Obtenha o formulário pelo ID
+            var form = document.getElementById('myForm');
+            
+            // Envie o formulário
+            form.submit();
+        }
+        // Obtenha o tempo final do exame do servidor no formato UTC
+        var end_time = new Date("{{ exame.end_time }}").getTime();
+
+        // Atualize a página quando o tempo do exame expirar
+        function checkExamTime() {
+            var current_time = new Date().getTime();
+            if (current_time >= end_time) {
+                submitForm();
+            }
+        }
+
+        // Verifique o tempo restante a cada segundo
+        setInterval(checkExamTime, 1000);
+    </script>
+{% endif %}
 </body>
 </html>
