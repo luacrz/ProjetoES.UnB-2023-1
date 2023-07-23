@@ -501,3 +501,22 @@ def concluir_exame(exame_id, questoes, user_id):
 
     flash("Exame concluído automaticamente.", "info")
     return redirect(url_for('pag_aluno'))
+
+
+@app.route('/delete_exam/<int:exam_id>', methods=['GET', 'POST'])
+def delete_exam(exam_id):
+    exam = tables.Exam.query.get(exam_id)
+
+    if not exam:
+        flash("Exame não encontrado", "error")
+        return redirect(url_for('listar_exames'))
+    
+    if request.method == 'POST':
+        db.session.delete(exam)
+        db.session.commit()
+
+        # Após a exclusão bem-sucedida, redirecionar para a página de listagem de exames.
+        return redirect(url_for('listar_exames'))
+
+    # Renderizar a página de confirmação de exclusão para solicitações GET.
+    return render_template('confirm_delete.html', exam=exam)

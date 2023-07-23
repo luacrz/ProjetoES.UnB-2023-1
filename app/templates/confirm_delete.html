@@ -1,24 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Listar Exames</title>
+    <title>Confirmar Exclusão</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f2f2f2;
         }
-
-        
         .header {
             background-color: #7edd7b;
             padding: 10px;
         }
-
-        
         .menu {
             list-style-type: none;
             margin: 0;
@@ -97,23 +92,29 @@
             cursor: pointer;
         }
 
+        .button-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
         .button {
-            display: inline-block;
             background-color: #000000;
             color: #fff;
-            text-align: center;
-            padding: 8px 20px;
+            padding: 10px 20px;
             border: none;
             border-radius: 4px;
             text-decoration: none;
-            margin-bottom: 10px;
+            margin-left: 10px;
             cursor: pointer;
         }
 
         .button:hover {
             background-color: #333333;
         }
+
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
     <div class="header">
@@ -127,23 +128,36 @@
             <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt logout-icon"></i> Sair</a></li>   
         </ul>
     </div>
-    
-    <div class="container">
-        <h1>Listar Exames</h1>
-        <ul>
-            {% for exame in exames %}
-            <li>
-                <h3>Id do exame: {{ exame.id }}</h3>
-                <p>Horário de Início: {{ exame.start_time }}</p>
-                <p>Horário de Término: {{ exame.end_time }}</p>
-                <p>Comentário: {{ exame.comment }}</p>
-                <a class="button" href="{{ url_for('list_exam_questions', exam_id=exame.id) }}">Questões</a>
-                <a class="button" href="{{ url_for('view_finalized_exams', exam_id=exame.id) }}">Relatório do Exame</a>
-                <a class="button" href="{{ url_for('delete_exam', exam_id=exame.id) }}" title="Excluir Exame"><i class="fas fa-trash-alt"></i></a>
-            </li>
-            </li>
-            {% endfor %}
-        </ul>
-    </div>
-</body>
+    <body>
+        <div class="container">
+            <h1>Tem certeza que deseja excluir o exame?</h1>
+            <p>Id do exame: {{ exam.id }}</p>
+            <p>Horário de Início: {{ exam.start_time }}</p>
+            <p>Horário de Término: {{ exam.end_time }}</p>
+            <p>Comentário: {{ exam.comment }}</p>
+
+            <form method="post" id="deleteForm">
+                <div class="button-container">
+                    <input type="submit" value="Sim" class="button">
+                    <a href="{{ url_for('listar_exames') }}" class="button">Não</a>
+                </div>
+            </form>
+        </div>
+        <script>
+            // Função para enviar a solicitação POST quando o usuário clicar em "Sim".
+            function confirmDelete() {
+                if (confirm("Tem certeza que deseja excluir essa prova?")) {
+                    const deleteForm = document.getElementById('deleteForm');
+                    deleteForm.submit(); // Envia a solicitação POST.
+                }
+            }
+        </script>
+    </body>
 </html>
+
+
+
+
+
+
+
