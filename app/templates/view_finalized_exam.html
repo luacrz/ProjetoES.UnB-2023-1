@@ -135,6 +135,18 @@
             color: #fff;
             border: none;
         }
+        .back-btn {
+            padding: 8px 20px;
+            background-color: #000000;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        .back-btn:hover {
+            background-color: #333333;
+        }
     </style>
 </head>
 <body>
@@ -144,7 +156,7 @@
             <li><a href="{{ url_for('pag_professor') }}"><i class="fas fa-home"></i></a></li>
             <li><a href="{{ url_for('create_question') }}"><i class="fas fa-plus"></i> Criar Questão</a></li>
             <li><a href="{{ url_for('create_exam') }}"><i class="fas fa-plus"></i> Criar Exame</a></li>
-            <li><a href="{{ url_for('visualizar_notas') }}"><i class="fas fa-chart-bar"></i> Relatório de Notas</a></li>
+            <!--<li><a href="{{ url_for('visualizar_notas') }}"><i class="fas fa-chart-bar"></i> Relatório de Notas</a></li> -->
             <li><a href="{{ url_for('listar_questoes') }}"><i class="fas fa-list"></i> Questões</a></li>
             <li><a href="{{ url_for('listar_exames') }}"><i class="fas fa-list"></i> Exames</a></li>
             <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt logout-icon"></i> Sair</a></li>   
@@ -160,12 +172,9 @@
             </ul>
         </div>
     {% endif %}
-        
-    <div class="header">
-
-    </div>
     
     <div class="container">
+        <button class="back-btn" onclick="goBack()">Voltar</button>
         <h1>Exame: {{ exam.id }}</h1>
         <h3 style="text-align: center;">Nota Máxima: {{ nota_maxima }}</h3>
         <h2>Aluno: {{ user.name }}</h2>
@@ -259,5 +268,10 @@
         <p>Não há questões neste exame.</p>
         {% endif %}
     </div>
+    <script>
+        function goBack() {
+            history.back();
+        }
+    </script>
 </body>
 </html>

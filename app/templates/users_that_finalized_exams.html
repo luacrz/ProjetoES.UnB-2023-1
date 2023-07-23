@@ -105,6 +105,25 @@
             cursor: pointer;
             margin-bottom: 20px;
         }
+        .back-btn:hover {
+            background-color: #333333;
+        }
+        .button {
+            display: inline-block;
+            background-color: #000000;
+            color: #fff;
+            text-align: center;
+            padding: 8px 20px;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            background-color: #333333;
+        }
     </style>
 </head>
 <body>
@@ -113,7 +132,7 @@
             <li><a href="{{ url_for('pag_professor') }}"><i class="fas fa-home"></i></a></li>
             <li><a href="{{ url_for('create_question') }}"><i class="fas fa-plus"></i> Criar Questão</a></li>
             <li><a href="{{ url_for('create_exam') }}"><i class="fas fa-plus"></i> Criar Exame</a></li>
-            <li><a href="{{ url_for('visualizar_notas') }}"><i class="fas fa-chart-bar"></i> Relatório de Notas</a></li>
+            <!--<li><a href="{{ url_for('visualizar_notas') }}"><i class="fas fa-chart-bar"></i> Relatório de Notas</a></li> -->
             <li><a href="{{ url_for('listar_questoes') }}"><i class="fas fa-list"></i> Questões</a></li>
             <li><a href="{{ url_for('listar_exames') }}"><i class="fas fa-list"></i> Exames</a></li>
             <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt logout-icon"></i> Sair</a></li>   
@@ -121,6 +140,7 @@
     </div>
     
     <div class="container">
+        <button class="back-btn" onclick="goBack()">Voltar</button>
         <h1 style="text-align: center;">Notas dos alunos do Exame {{ exam.id }}</h1>
         <h3 style="text-align: center;">Nota Máxima: {{ nota_maxima }}</h3>
         <div class="users-wrapper">
@@ -129,11 +149,15 @@
                     <h3>Aluno: {{ name }}</h3>
                     <p>Usuário ID: {{ user_id }}</p>
                     <p>Nota Total: {{ nota_total }}</p>
-                    <a href="{{ url_for('view_finalized_exam', exam_id=exam.id,  user_id=user_id) }}" class="view-user-link">Ver Detalhes</a>
+                    <a class="button" href="{{ url_for('view_finalized_exam', exam_id=exam.id,  user_id=user_id) }}" class="view-user-link">Ver Detalhes</a>
                 </div>
             {% endfor %}
         </div>
     </div>
-
+    <script>
+        function goBack() {
+            history.back();
+        }
+    </script>
 </body>
 </html>
