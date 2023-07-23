@@ -1,6 +1,6 @@
 from flask import render_template, redirect, url_for, request, flash
 from app import app, db
-from app.models.tables import User
+from app.models.tables import User, Exam # Importe a classe Exam
 from app.models import tables
 from flask_login import login_user, logout_user, current_user
 from datetime import datetime
@@ -505,13 +505,19 @@ def concluir_exame(exame_id, questoes, user_id):
 
 @app.route('/delete_exam/<int:exam_id>', methods=['GET', 'POST'])
 def delete_exam(exam_id):
-    exam = tables.Exam.query.get(exam_id)
+    exam = Exam.query.get(exam_id)
 
     if not exam:
         flash("Exame não encontrado", "error")
         return redirect(url_for('listar_exames'))
-    
+
     if request.method == 'POST':
+        # Excluir todas as ExamQuestion associadas ao exame
+        exam_questions = tables.ExamQuestion.query.filter_by(exam_id=exam_id).all()
+        for exam_question in exam_questions:
+            db.session.delete(exam_question)
+
+        # Excluir o exame após remover todas as ExamQuestion associadas
         db.session.delete(exam)
         db.session.commit()
 
