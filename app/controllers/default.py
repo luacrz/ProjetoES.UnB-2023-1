@@ -44,7 +44,8 @@ def calcular_nota_maxima_exame(exam_id):
 
     return nota_maxima
     
-
+def with_role():
+    return current_user.role
 
 
 
@@ -170,10 +171,12 @@ def create_question():
 
 @app.route("/pag_aluno", methods = ['GET', 'POST']) #Página que contém links que redirecionam para as funções do Aluno NÃO IMPLEMENTADO
 def pag_aluno():
+    if current_user.role == 1: return redirect(url_for('pag_professor'))
     return render_template("pag_aluno.html")
 
 @app.route("/pag_professor", methods = ['GET', 'POST']) #Página que contém links que redirecionam para as funções do professor
 def pag_professor():
+    if current_user.role == 0: return redirect(url_for('pag_aluno'))
     return render_template("pag_professor.html")
 
 @app.route("/visualizar_notas")
@@ -305,47 +308,7 @@ def submit_answers(exame_id):
 
     return render_template("responder_prova.html", questoes=questoes, exame=exame)
 
-    exame = tables.Exam.query.get(exame_id)
 
-    if exame is None:
-        flash("Exame não encontrado", "error")
-        return redirect(url_for('procurar_exames'))
-
-    user_id = current_user.id
-    exam_realizado = tables.FinalizedExam.query.filter_by(user_id=user_id, exam_id=exame.id).first()
-    if exam_realizado is not None:
-        flash(f"Você já realizou o exame {exame_id} anteriormente", "error")
-        return redirect(url_for('procurar_exames'))
-
-    current_time = datetime.now()
-    # if current_time > exame.end_time:
-    #     flash(f"O exame {exame_id} já expirou", "error")
-    #     return redirect(url_for('procurar_exames'))
-
-    if current_time < exame.start_time:
-        flash(f"O exame {exame_id} ainda não abriu", "error")
-        return redirect(url_for('procurar_exames'))
-
-    if request.method == "POST":
-        respostas = {}
-        for key, value in request.form.items():
-            if key.startswith('respostas['):
-                questao_id = key.split('[')[1].split(']')[0]
-                respostas[questao_id] = value
-
-        Respostas_formatadas = ", ".join(f"{questao_id}_{resposta}" for questao_id, resposta in respostas.items())
-        Exame_finalizado = tables.FinalizedExam(user_id, exame_id, Respostas_formatadas)
-        db.session.add(Exame_finalizado)
-        db.session.commit()
-
-        return redirect(url_for('pag_aluno'))
-
-    questoes = db.session.query(tables.Question, tables.ExamQuestion.nota).filter(
-        tables.ExamQuestion.Exam_id == exame.id,
-        tables.ExamQuestion.Question_id == tables.Question.id
-    ).all()
-
-    return render_template("responder_prova.html", questoes=questoes, exame=exame)
 
 
 @app.route("/procurar_exames")  # Lista todos os exames do Usuário atual
