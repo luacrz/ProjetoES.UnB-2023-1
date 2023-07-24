@@ -154,14 +154,14 @@
                 <p>Horário de Término: {{ exame.end_time }}</p>
                 <p>Comentário: {{ exame.comment }}</p>
                 <!-- Adicione aqui as informações específicas da prova -->
-                {% if exame.status == "Exame Feito" %}
+                {% if status == "Exame Feito" %}
                     <button class="create-exam-btn">Exame Feito</button>
-                {% elif exame.status == "Exame ainda não abriu" %}
+                {% elif status == "Exame ainda não abriu" %}
                     <button class="create-exam-btn">Exame ainda não abriu</button>
-                {% elif exame.status == "Exame expirou" %}
+                {% elif status == "Exame expirou" %}
                     <button class="create-exam-btn">Exame expirou</button>
                 {% else %}
-                    <a href="{{ url_for('submit_answers', exame_id=exame.id) }}" class="create-exam-btn">Fazer Exame</a>
+                    <a href="{{ url_for('submit_answers', exame_id=exame.id, status = status) }}" class="create-exam-btn">Fazer Exame</a>
                 {% endif %}
             </li>
         </ul>

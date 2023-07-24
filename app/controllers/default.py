@@ -579,8 +579,24 @@ def buscar_exame():
         if exame_id.isdigit():
             exame = buscar_exame_por_id(int(exame_id))
             if exame:
+
+                current_time = datetime.now()
+                exames_feitos = tables.FinalizedExam.query.filter_by(user_id=current_user.id).all()
+                exame_selecionado = Exam.query.get(exame_id)
+                exames_feitos_ids = [exame.exam_id for exame in exames_feitos]
+                status = ""
+                if exame_selecionado.id in exames_feitos_ids:
+                    status = "Exame Feito"
+                elif exame_selecionado.start_time > current_time:
+                    status = "Exame ainda não abriu"
+                elif exame_selecionado.end_time < current_time:
+                    status = "Exame expirou"
+
+
+
+
                 # Se a prova for encontrada, renderize a página de detalhes da prova
-                return render_template('detalhes_prova.html', exame=exame)
+                return render_template('detalhes_prova.html', exame=exame, status = status)
             else:
                 # Se a prova não for encontrada, redirecione para a página de prova não encontrada
                 flash("Prova não encontrada", "error")
