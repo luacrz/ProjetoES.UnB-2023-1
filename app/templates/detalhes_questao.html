@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Listar Questões</title>
+    <title>Detalhes da Questão</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         /* Estilos gerais da página */
@@ -136,18 +136,21 @@
             <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Sair</a></li>   
         </ul>
     </div>
+    <!---
+    <h1>Detalhes da Questão</h1>
+    <h3>Id da questão: {{ questao.id }}</h3>
+    <p>Enunciado: {{ questao.statement }}</p>
+    --->
     <div class="container">
         <button class="back-btn" onclick="goBack()">Voltar</button>
-        <h1>Questões do exame</h1>
+        <h1>Detalhes da Questão</h1>
         <ul>
-            {% for questao in questoes %}
             <li>
                 <h3>Id da questão: {{ questao.id}}</h3>
                 <p>Enunciado: {{ questao.statement }}</p>
                 {% if questao.question_type == 1 %}
                     <p>Tipo: Verdadeiro/Falso</p>
                     <p>Resposta: {{ questao.answer_VouF }}</p>
-                    
                 {% elif questao.question_type == 2 %}
                     <p>Tipo: A/B/C/D</p>
                     <p>Resposta: {{ questao.answer_Mult }}</p>
@@ -156,14 +159,11 @@
                     <p>Alternativa B: {{ questao.answer_Mult_B }}</p>
                     <p>Alternativa C: {{ questao.answer_Mult_C }}</p>
                     <p>Alternativa D: {{ questao.answer_Mult_D }}</p>
-                    
                 {% elif questao.question_type == 3 %}
                     <p>Tipo: Numérico</p>
                     <p>Resposta: {{ questao.answer_ValNum }}</p>
-                    
                 {% endif %}
             </li>
-            {% endfor %}
         </ul>
     </div>
     <script>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Listar Questões</title>
+    <title>Detalhes da Questão</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         /* Estilos gerais da página */
@@ -123,47 +123,47 @@
         .back-btn:hover {
             background-color: #333333;
         }
+        .create-exam-btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #4caf50;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
     <div class="header">
         <ul class="menu">
-            <li><a href="{{ url_for('pag_professor') }}"><i class="fas fa-home"></i></a></li>
-            <li><a href="{{ url_for('create_question') }}"><i class="fas fa-plus"></i> Criar Questão</a></li>
-            <li><a href="{{ url_for('create_exam') }}"><i class="fas fa-plus"></i> Criar Exame</a></li>
-            <li><a href="{{ url_for('listar_questoes') }}"><i class="fas fa-list"></i> Questões</a></li>
-            <li><a href="{{ url_for('listar_exames') }}"><i class="fas fa-list"></i> Exames</a></li>
-            <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Sair</a></li>   
+            <li><a href="{{ url_for('pag_aluno') }}"><i class="fas fa-home"></i></a></li>
+            <li><a href="{{ url_for('procurar_exames')}}"><i class="fas fa-search"></i> Procurar Exames</a></li>
+            <li><a href="{{ url_for('exames_feitos')}}"><i class="fas fa-check-circle"></i> Exames feitos</a></li>
+            <li><a href="{{ url_for('logout')}}"><i class="fas fa-sign-out-alt"></i> Sair</a></li>   
         </ul>
     </div>
+    
     <div class="container">
         <button class="back-btn" onclick="goBack()">Voltar</button>
-        <h1>Questões do exame</h1>
+        <h1>Detalhes da Prova</h1>
         <ul>
-            {% for questao in questoes %}
             <li>
-                <h3>Id da questão: {{ questao.id}}</h3>
-                <p>Enunciado: {{ questao.statement }}</p>
-                {% if questao.question_type == 1 %}
-                    <p>Tipo: Verdadeiro/Falso</p>
-                    <p>Resposta: {{ questao.answer_VouF }}</p>
-                    
-                {% elif questao.question_type == 2 %}
-                    <p>Tipo: A/B/C/D</p>
-                    <p>Resposta: {{ questao.answer_Mult }}</p>
-                    <!-- Mostra as alternativas quando o tipo é A/B/C/D -->
-                    <p>Alternativa A: {{ questao.answer_Mult_A }}</p>
-                    <p>Alternativa B: {{ questao.answer_Mult_B }}</p>
-                    <p>Alternativa C: {{ questao.answer_Mult_C }}</p>
-                    <p>Alternativa D: {{ questao.answer_Mult_D }}</p>
-                    
-                {% elif questao.question_type == 3 %}
-                    <p>Tipo: Numérico</p>
-                    <p>Resposta: {{ questao.answer_ValNum }}</p>
-                    
+                <h3>Id da prova: {{ exame.id }}</h3>
+                <p>Horário de Início: {{ exame.start_time }}</p>
+                <p>Horário de Término: {{ exame.end_time }}</p>
+                <p>Comentário: {{ exame.comment }}</p>
+                <!-- Adicione aqui as informações específicas da prova -->
+                {% if exame.status == "Exame Feito" %}
+                    <button class="create-exam-btn">Exame Feito</button>
+                {% elif exame.status == "Exame ainda não abriu" %}
+                    <button class="create-exam-btn">Exame ainda não abriu</button>
+                {% elif exame.status == "Exame expirou" %}
+                    <button class="create-exam-btn">Exame expirou</button>
+                {% else %}
+                    <a href="{{ url_for('submit_answers', exame_id=exame.id) }}" class="create-exam-btn">Fazer Exame</a>
                 {% endif %}
             </li>
-            {% endfor %}
         </ul>
     </div>
     <script>

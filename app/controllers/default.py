@@ -530,3 +530,64 @@ def delete_exam(exam_id):
 
     # Renderizar a página de confirmação de exclusão para solicitações GET.
     return render_template('confirm_delete.html', exam=exam)
+
+def buscar_questao_por_id(questao_id):
+    try:
+        questao = tables.Question.query.get(questao_id)
+        return questao
+    except Exception as e:
+        # Trate qualquer exceção que possa ocorrer durante a busca
+        print("Erro ao buscar questão:", e)
+        return None
+
+
+
+@app.route('/buscar_questao', methods=['GET'])
+def buscar_questao():
+    questao_id = request.args.get('questao_id')
+    if questao_id:
+
+        if questao_id.isdigit():
+            questao = buscar_questao_por_id(int(questao_id))
+            if questao:
+                # Se a questão for encontrada, renderize a página de detalhes da questão
+                return render_template('detalhes_questao.html', questao=questao)
+            else:
+                # Se a questão não for encontrada, retorne uma mensagem ou redirecione para a página de listagem de questões
+                return render_template('questao_nao_encontrada.html')
+        else:
+            # Se o ID fornecido não for um número válido, retorne uma mensagem de erro
+            flash("ID inválido", "error")
+            return render_template('busca_id_invalido.html')
+    else:
+        return render_template('listar_questoes.html')
+
+
+def buscar_exame_por_id(exame_id):
+    try:
+        exame = Exam.query.get(exame_id)
+        return exame
+    except Exception as e:
+        # Trate qualquer exceção que possa ocorrer durante a busca
+        print("Erro ao buscar exame:", e)
+        return None
+
+@app.route('/buscar_exame', methods=['GET'])
+def buscar_exame():
+    exame_id = request.args.get('exame_id')
+    if exame_id:
+        if exame_id.isdigit():
+            exame = buscar_exame_por_id(int(exame_id))
+            if exame:
+                # Se a prova for encontrada, renderize a página de detalhes da prova
+                return render_template('detalhes_prova.html', exame=exame)
+            else:
+                # Se a prova não for encontrada, redirecione para a página de prova não encontrada
+                flash("Prova não encontrada", "error")
+                return render_template('prova_nao_encontrada.html')
+        else:
+            flash("ID inválido", "error")
+            return render_template('busca_id_invalido_prova.html')
+    else:
+        return render_template('procurar_exames.html')
+

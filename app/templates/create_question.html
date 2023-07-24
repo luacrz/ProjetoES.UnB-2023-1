@@ -52,7 +52,7 @@
             border-radius: 8px;
         }
 
-        h1, h2 {
+        h1, h2, p {
             text-align: center;
         }
 
@@ -88,6 +88,13 @@
             border-radius: 4px;
             cursor: pointer;
         }
+        .success-message {
+            margin-top: 20px;
+            color: #4caf50; 
+            font-size: 14px;
+            text-align: center;
+        }
+
     </style>
 </head>
 <body>
@@ -154,6 +161,7 @@
             </div>
             
             <input type="submit" value="Criar Questão">
+            <p class="success-message">Para visualizar as questões criadas, clique em "Questões" no Menu da página.</p>
         </form>
     </div>
     <script>
@@ -200,9 +208,9 @@
             showFields();
         });
     </script>
-    
-    
-    
+
+
+
 
 </body>
 </html>

@@ -3,6 +3,7 @@
 <head>
     <title>Página do Aluno</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -84,7 +85,90 @@
             text-decoration: none;
             border-radius: 4px;
         }
+        .explanation-container {
+            /* Estilos adicionais para a área de explicação */
+            background-color: #f2f2f2;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+        }
 
+        .explanation-text {
+            /* Estilos para o texto de explicação */
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .create-exam-btn {
+            /* Estilos para o botão "Criar Exame" */
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #4caf50;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .calendar-container {
+            /* Estilos para o container do calendário */
+            background-color: #f2f2f2;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .calendar-table {
+            /* Estilos para a tabela do calendário */
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .calendar-table th,
+        .calendar-table td {
+            /* Estilos para as células de cabeçalho e de dados da tabela */
+            padding: 8px;
+            border: 1px solid #ccc;
+        }
+
+        .calendar-table th {
+            /* Estilos para as células de cabeçalho da tabela */
+            background-color: #7edd7b;
+        }
+
+        .calendar-table td {
+            /* Estilos para as células de dados da tabela */
+            text-align: center;
+        }
+
+        .month-selector {
+            /* Estilos para o seletor de mês */
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .month-selector button {
+            /* Estilos para os botões do seletor de mês */
+            padding: 8px 12px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            margin: 0 5px;
+            cursor: pointer;
+        }
+        #month-year {
+            font-size: 16px; /* Tamanho da fonte */
+        }
+
+        /* Estilos para os botões de rotação dos meses */
+        .month-selector button {
+            font-size: 11px; 
+        }
     </style>
 </head>
 <body>
@@ -101,20 +185,103 @@
         <div class="content">
             <h1>Página do Aluno</h1>
             <div class="explanation-container">
-                <p>Aqui você pode procurar exames disponíveis e visualizar os exames que já foram feitos</p>
+                <p class="explanation-text">Aqui você pode procurar exames disponíveis e visualizar os exames que já foram feitos</p>
                 <a href="{{ url_for('procurar_exames') }}" class="create-exam-btn">Procurar Exames</a>
             </div>
-
+            <div class="calendar-container">
+                <div class="month-selector">
+                    <button onclick="previousMonth()"><i class="fas fa-chevron-left"></i></button>
+                    <h2 id="month-year"></h2>
+                    <button onclick="nextMonth()"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                <table class="calendar-table" id="calendar-table">
+                    <!-- A tabela do calendário será gerada dinamicamente aqui -->
+                </table>
+            </div>
         </div>
 
         <div class="user-info">
             <div class="user-avatar">
                 <i class="fas fa-user"></i>
             </div>
+            <p class="explanation-text">Informações do Aluno</p>
             <p><strong>Nome:</strong> {{ current_user.username }}</p>
-            <p><strong>ID:</strong> {{ current_user.id }}</p>
+            <p><strong>ID de usuário:</strong> {{ current_user.id }}</p>
             <p><strong>E-mail:</strong> {{ current_user.email }}</p>
         </div>
     </div>
+    <script>
+        // Função para gerar o calendário do mês atual
+        function generateCalendar(year, month) {
+            const calendarTable = document.getElementById("calendar-table");
+            const currentDate = new Date();
+            const currentYear = year || currentDate.getFullYear();
+            const currentMonth = month || currentDate.getMonth();
+
+            // Array com os nomes dos meses
+            const monthNames = [
+                "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+                "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+            ];
+
+            // Preenche o cabeçalho com o nome do mês e do ano
+            document.getElementById("month-year").textContent = `${monthNames[currentMonth]} ${currentYear}`;
+
+            // Cabeçalho da tabela com os dias da semana
+            const weekdays = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+            let headerRow = '<tr>';
+            weekdays.forEach(weekday => {
+                headerRow += `<th>${weekday}</th>`;
+            });
+            headerRow += '</tr>';
+
+            // Corpo da tabela com os dias do mês
+            let bodyRows = '';
+            const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
+            const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
+            let currentDateInMonth = new Date(firstDayOfMonth);
+
+            while (currentDateInMonth <= lastDayOfMonth) {
+                if (currentDateInMonth.getDay() === 0) {
+                    bodyRows += '<tr>'; // Nova linha para o início de uma semana
+                }
+
+                // Célula para cada dia do mês
+                const dayNumber = currentDateInMonth.getDate();
+                const cellContent = dayNumber === 1 ? `${dayNumber}/${currentMonth + 1}` : dayNumber;
+                bodyRows += `<td>${cellContent}</td>`;
+
+                if (currentDateInMonth.getDay() === 6) {
+                    bodyRows += '</tr>'; // Fecha a linha ao final de uma semana
+                }
+
+                currentDateInMonth.setDate(currentDateInMonth.getDate() + 1);
+            }
+
+            // Atualiza o conteúdo da tabela
+            calendarTable.innerHTML = headerRow + bodyRows;
+        }
+
+        // Função para ir para o próximo mês
+        function nextMonth() {
+            const currentYear = new Date().getFullYear();
+            const currentMonth = new Date().getMonth();
+            const nextYear = currentMonth === 11 ? currentYear + 1 : currentYear;
+            const nextMonth = currentMonth === 11 ? 0 : currentMonth + 1;
+            generateCalendar(nextYear, nextMonth);
+        }
+
+        // Função para voltar para o mês anterior
+        function previousMonth() {
+            const currentYear = new Date().getFullYear();
+            const currentMonth = new Date().getMonth();
+            const prevYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+            const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+            generateCalendar(prevYear, prevMonth);
+        }
+
+        // Chama a função para gerar o calendário do mês atual ao carregar a página
+        generateCalendar();
+    </script>
 </body>
 </html>
