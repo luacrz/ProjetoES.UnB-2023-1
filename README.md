@@ -83,17 +83,17 @@ set FLASK_APP=run.py
 ```
 O servidor Flask será iniciado e você verá a saída indicando em qual endereço IP e porta o aplicativo está sendo executado, copie e cole o endereço no navegador para visualizar.
 
+
+
+## Instruções de uso do Sistema
+
 Credencias validas para professor - username: "pedro" senha : "asdfg" 
 
 Credencias validas para aluno - username: "ester" senha : "asdfg" 
 
 Você pode estar também registrando professores e alunos, além de criar as questões e exames. 
 
-O professor pode acessar qualquer um dos hyperlinks do cabeçalho (exceto "Visualizar Relatório de Notas", que está atualmente dentro da função de Listar Exames). 
 
- 
+Para o professor, é possível fazer criação de questões dos tipo V e F, múltipla escolha e valor numérico. Isso pode ser acessado através do menu na aba “Criar Questão”.  As questões podem ser utilizadas em mais de um exame, e sua nota é atribuída quando a questão é adicionada ao exame. O professor pode também criar exames através do “Criar Exames”. Os exames possuem enunciado, data de abertura e de término, além das questões e notas atribuídas a estas. O professor pode também ver suas questões, através do “Questões” presente no menu. E por fim, no “Exames” presente no menu é possível listar os exames criados pelo professor, é possível listar as questões presentes nesse exame, é possível deletar um exame, e o professor pode ver o relatório do exame, onde os alunos que fizeram o exame são listados, e a partir daí, o professor pode ver detalhes do exame feito pelo aluno.  
 
-O professor pode criar questões, exames, além de poder ver o conteúdo dessas provas como suas questões e um relatório que contém as questões respondidas dos alunos. No relatório os alunos estão separados como ID, seguido das respostas. 
-
-O aluno pode fazer os exames, além de ver as questões que ele respondeu em um exame. Caso o exame já tiver sido feito o aluno não poderá editar e nem fazer novamente a prova. O aluno também não pode fazer a prova se a prova não tiver começado ou já tiver com o tempo esgotado. 
- 
+Para o aluno, é possível listar os exames, através do “Procurar Exames” presente no menu. Serão listados todos os exames, porém, somente será possível ser respondido os exames que estão abertos e que não estão previamente respondidos. Se o tempo do exame expira enquanto o aluno o faz, suas questões respondidas são automaticamente enviadas. O aluno poderá ver seus exames concluídos a partir do “Exames feitos” contido no menu. Lá será listados os exames feitos, e será possível ver seus detalhes. Detalhes esses como nota do aluno, nota atribuída a cada questão, a questão em si, como também a alternativa assinada e qual era a alternativa correta. 
